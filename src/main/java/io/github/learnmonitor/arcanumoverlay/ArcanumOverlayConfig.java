@@ -1,17 +1,17 @@
-package com.example.plugin;
+package io.github.learnmonitor.arcanumoverlay;
 
 import de.igslandstuhl.database.plugins.config.BoolSetting;
 import de.igslandstuhl.database.plugins.config.PluginConfig;
 import de.igslandstuhl.database.plugins.config.PluginSetting;
 
-public class ExamplePluginConfig extends PluginConfig<ExamplePlugin> {
+public class ArcanumOverlayConfig extends PluginConfig<ArcanumOverlayPlugin> {
     private final BoolSetting exampleSetting;
 
-    private ExamplePluginConfig(ExamplePlugin plugin, BoolSetting exampleSetting) {
+    private ArcanumOverlayConfig(ArcanumOverlayPlugin plugin, BoolSetting exampleSetting) {
         super(plugin, new PluginSetting[] {exampleSetting});
         this.exampleSetting = exampleSetting;
     }
-    ExamplePluginConfig(ExamplePlugin plugin) {
+    ArcanumOverlayConfig(ArcanumOverlayPlugin plugin) {
         this(plugin,
             new BoolSetting("example", "Example Setting", "Does nothing", false)
         );

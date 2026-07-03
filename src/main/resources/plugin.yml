@@ -1,4 +1,4 @@
-id: example_plugin
-name: Example Plugin
-description: This is an example plugin
-main: com.example.plugin.ExamplePlugin
+id: arcanum-overlay
+name: Arcanum Overlay Plugin
+description: Adds an overlay to the student-database project.
+main: io.github.learnmonitor.arcanumoverlay.ArcanumOverlayPlugin

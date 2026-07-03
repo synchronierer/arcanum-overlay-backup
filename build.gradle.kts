@@ -15,11 +15,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly("igs-landstuhl:student-database:v2.0.0-SNAPSHOT-1") // TODO: Use an api only implementation here
+    compileOnly("igs-landstuhl:student-database:v2.0.0-SNAPSHOT-3") // TODO: Use an api only implementation here
     compileOnly("org.slf4j:slf4j-api:2.0.13")
 
     // Only for local debugging:
-    runtimeOnly("igs-landstuhl:student-database:v2.0.0-SNAPSHOT-1")
+    runtimeOnly("igs-landstuhl:student-database:v2.0.0-SNAPSHOT-3")
 
     // test framework (optional)
     testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
@@ -33,7 +33,7 @@ java {
 
 tasks.withType<Jar> {
     manifest {
-        attributes["Implementation-Title"] = "Example Plugin"
+        attributes["Implementation-Title"] = "Arcanum Overlay Plugin"
         attributes["Implementation-Version"] = project.version
     }
 }
@@ -60,4 +60,4 @@ tasks.register("printRuntimeClasspath") {
 }
 
 version = "v1.0.1"
-group = "igs-landstuhl.plugins"
+group = "io.github.learn-monitor"

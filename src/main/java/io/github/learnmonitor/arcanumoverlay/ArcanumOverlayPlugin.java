@@ -1,13 +1,13 @@
-package com.example.plugin;
+package io.github.learnmonitor.arcanumoverlay;
 
 import de.igslandstuhl.database.plugins.Plugin;
 
-public class ExamplePlugin extends Plugin {
-    private ExamplePluginConfig config;
+public class ArcanumOverlayPlugin extends Plugin {
+    private ArcanumOverlayConfig config;
 
     @Override
     protected void onLoad() {
-        config = new ExamplePluginConfig(this);
+        config = new ArcanumOverlayConfig(this);
         getLogger().info("Example plugin loaded.");
     }
 
@@ -18,7 +18,7 @@ public class ExamplePlugin extends Plugin {
     protected void onDisable() {}
 
     @Override
-    public ExamplePluginConfig getConfig() {
+    public ArcanumOverlayConfig getConfig() {
         return config;
     }
 }
