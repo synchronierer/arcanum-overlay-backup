@@ -14,12 +14,18 @@ repositories {
     }
 }
 
-dependencies {
-    compileOnly("igs-landstuhl:student-database:v2.0.0-SNAPSHOT-3") // TODO: Use an api only implementation here
-    compileOnly("org.slf4j:slf4j-api:2.0.13")
+val studentDatabaseJar = providers.gradleProperty("studentDatabaseJar")
 
-    // Only for local debugging:
-    runtimeOnly("igs-landstuhl:student-database:v2.0.0-SNAPSHOT-3")
+dependencies {
+    if (studentDatabaseJar.isPresent) {
+        compileOnly(files(studentDatabaseJar.get()))
+        runtimeOnly(files(studentDatabaseJar.get()))
+    } else {
+        compileOnly("igs-landstuhl:student-database:v2.0.0-SNAPSHOT-3")
+        runtimeOnly("igs-landstuhl:student-database:v2.0.0-SNAPSHOT-3")
+    }
+
+    compileOnly("org.slf4j:slf4j-api:2.0.13")
 
     // test framework (optional)
     testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
