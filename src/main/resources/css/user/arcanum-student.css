@@ -191,16 +191,42 @@ select {
     font-weight: 900;
 }
 
+.arcanum-floating-grades {
+    position: fixed;
+    top: 6.5rem;
+    right: 1rem;
+    z-index: 30;
+    width: min(18rem, calc(100vw - 1.5rem));
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 1.2rem;
+    background: rgba(17, 24, 32, 0.92);
+    box-shadow: var(--arcanum-shadow);
+    backdrop-filter: blur(10px);
+}
+
+.arcanum-floating-grades__header h2 {
+    margin: 0.15rem 0 0.45rem;
+    font-size: 1.35rem;
+}
+
+.arcanum-floating-grades__hint {
+    margin: 0;
+    color: var(--arcanum-muted);
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+
 .arcanum-main {
     position: relative;
     z-index: 2;
     width: min(1180px, calc(100% - 2rem));
     margin: -3.2rem auto 0;
+    padding-right: 20rem;
     padding-bottom: 3rem;
 }
 
-.arcanum-intro,
-.arcanum-grade-guide {
+.arcanum-intro {
     display: flex;
     gap: 2rem;
     align-items: end;
@@ -212,8 +238,7 @@ select {
     box-shadow: var(--arcanum-shadow);
 }
 
-.arcanum-intro h2,
-.arcanum-grade-guide h2 {
+.arcanum-intro h2 {
     margin: 0.15rem 0 0;
     font-size: clamp(1.5rem, 3vw, 2.25rem);
 }
@@ -412,29 +437,31 @@ select {
     opacity: 0.58;
 }
 
-.arcanum-grade-guide {
-    align-items: center;
+.arcanum-grade-scale--floating {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 0.9rem;
 }
 
-.arcanum-grade-scale {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: flex-end;
-}
-
-.arcanum-grade-scale span {
-    padding: 0.55rem 0.75rem;
-    border: 1px solid var(--arcanum-border);
-    border-radius: 999px;
-    color: var(--arcanum-muted);
+.arcanum-grade-pill {
+    display: grid;
+    gap: 0.18rem;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.95rem;
     background: rgba(255, 255, 255, 0.04);
-    font-size: 0.75rem;
 }
 
-.arcanum-grade-scale strong {
-    margin-right: 0.2rem;
+.arcanum-grade-pill__coins {
     color: var(--arcanum-gold-light);
+    font-size: 0.95rem;
+    font-weight: 900;
+}
+
+.arcanum-grade-pill__label {
+    color: var(--arcanum-muted);
+    font-size: 0.76rem;
+    line-height: 1.25;
 }
 
 .arcanum-empty-state,
@@ -482,7 +509,17 @@ select {
     }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
+    .arcanum-main {
+        padding-right: 18rem;
+    }
+
+    .arcanum-floating-grades {
+        width: 16rem;
+    }
+}
+
+@media (max-width: 1024px) {
     .arcanum-profile {
         grid-template-columns: auto 1fr auto;
     }
@@ -499,6 +536,17 @@ select {
         width: 4rem;
         height: 4rem;
         font-size: 2rem;
+    }
+
+    .arcanum-floating-grades {
+        position: static;
+        width: min(1180px, calc(100% - 2rem));
+        margin: -3rem auto 0;
+    }
+
+    .arcanum-main {
+        margin-top: 1rem;
+        padding-right: 0;
     }
 }
 
@@ -531,8 +579,7 @@ select {
         grid-template-columns: 1fr;
     }
 
-    .arcanum-intro,
-    .arcanum-grade-guide {
+    .arcanum-intro {
         align-items: flex-start;
         flex-direction: column;
     }
@@ -540,15 +587,12 @@ select {
     .arcanum-intro__text {
         text-align: left;
     }
-
-    .arcanum-grade-scale {
-        justify-content: flex-start;
-    }
 }
 
 @media (max-width: 450px) {
     .arcanum-main,
-    .arcanum-profile {
+    .arcanum-profile,
+    .arcanum-floating-grades {
         width: min(100% - 1rem, 1180px);
     }
 

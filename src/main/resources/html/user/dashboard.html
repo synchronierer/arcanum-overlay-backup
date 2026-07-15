@@ -88,6 +88,46 @@
             </div>
         </header>
 
+        <aside
+            class="arcanum-floating-grades"
+            aria-labelledby="grade-title"
+        >
+            <div class="arcanum-floating-grades__header">
+                <p class="arcanum-eyebrow">Orientierung</p>
+                <h2 id="grade-title">Münzen &amp; Noten</h2>
+                <p class="arcanum-floating-grades__hint">
+                    Die Note ergibt sich direkt aus der Anzahl deiner Münzen.
+                </p>
+            </div>
+
+            <div class="arcanum-grade-scale arcanum-grade-scale--floating">
+                <div class="arcanum-grade-pill">
+                    <span class="arcanum-grade-pill__coins">ab 20</span>
+                    <span class="arcanum-grade-pill__label">Note 5 · mangelhaft</span>
+                </div>
+
+                <div class="arcanum-grade-pill">
+                    <span class="arcanum-grade-pill__coins">ab 40</span>
+                    <span class="arcanum-grade-pill__label">Note 4 · ausreichend</span>
+                </div>
+
+                <div class="arcanum-grade-pill">
+                    <span class="arcanum-grade-pill__coins">ab 60</span>
+                    <span class="arcanum-grade-pill__label">Note 3 · befriedigend</span>
+                </div>
+
+                <div class="arcanum-grade-pill">
+                    <span class="arcanum-grade-pill__coins">ab 75</span>
+                    <span class="arcanum-grade-pill__label">Note 2 · gut</span>
+                </div>
+
+                <div class="arcanum-grade-pill">
+                    <span class="arcanum-grade-pill__coins">ab 90</span>
+                    <span class="arcanum-grade-pill__label">Note 1 · sehr gut</span>
+                </div>
+            </div>
+        </aside>
+
         <main class="arcanum-main">
             <section class="arcanum-intro">
                 <div>
@@ -111,21 +151,6 @@
                 </article>
             </section>
 
-            <section class="arcanum-grade-guide" aria-labelledby="grade-title">
-                <div>
-                    <p class="arcanum-eyebrow">Orientierung</p>
-                    <h2 id="grade-title">Münzen und Notenstufen</h2>
-                </div>
-
-                <div class="arcanum-grade-scale">
-                    <span><strong>15</strong> Note 5</span>
-                    <span><strong>45</strong> Note 4</span>
-                    <span><strong>56</strong> Note 3</span>
-                    <span><strong>71</strong> Note 2</span>
-                    <span><strong>86</strong> Note 1</span>
-                </div>
-            </section>
-
             <p class="arcanum-error" id="dashboard-error" hidden></p>
         </main>
     </div>
@@ -133,6 +158,6 @@
     <script src="/student-database.js"></script>
     <script src="/build_dashboard.js"></script>
 
-    <!-- arcanum-overlay-student-v1 -->
+    <!-- arcanum-overlay-student-v2-floating-grades -->
 </body>
 </html>

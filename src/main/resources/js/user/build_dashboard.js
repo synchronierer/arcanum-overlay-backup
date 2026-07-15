@@ -1,11 +1,11 @@
 "use strict";
 
 const ARCANUM_GRADES = [
-    { grade: 5, coins: 15 },
-    { grade: 4, coins: 45 },
-    { grade: 3, coins: 56 },
-    { grade: 2, coins: 71 },
-    { grade: 1, coins: 86 }
+    { grade: 5, label: "mangelhaft", coins: 20 },
+    { grade: 4, label: "ausreichend", coins: 40 },
+    { grade: 3, label: "befriedigend", coins: 60 },
+    { grade: 2, label: "gut", coins: 75 },
+    { grade: 1, label: "sehr gut", coins: 90 }
 ];
 
 document.addEventListener("DOMContentLoaded", initialiseArcanumDashboard);
