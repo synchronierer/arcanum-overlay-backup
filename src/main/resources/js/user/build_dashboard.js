@@ -201,22 +201,60 @@ function createSubjectCard(subject) {
             </strong>
         </div>
 
-        <dl class="arcanum-subject-stats">
-            <div>
-                <dt>Aktuell</dt>
-                <dd>${subject.selectedTasks.length} Etappen</dd>
-            </div>
+        <div
+            class="arcanum-subject-stats"
+            aria-label="Etappenstatus für ${escapeHtml(subject.name)}"
+        >
+            <button
+                type="button"
+                class="arcanum-subject-stat-button"
+                data-detail-status="current"
+            >
+                <span class="arcanum-subject-stat-button__label">
+                    Aktuell
+                </span>
+                <strong class="arcanum-subject-stat-button__value">
+                    ${formatStageCount(subject.selectedTasks.length)}
+                </strong>
+                <span class="arcanum-subject-stat-button__action">
+                    Anzeigen
+                </span>
+            </button>
 
-            <div>
-                <dt>Bestanden</dt>
-                <dd>${subject.completedTasks.length} Etappen</dd>
-            </div>
+            <button
+                type="button"
+                class="arcanum-subject-stat-button
+                       arcanum-subject-stat-button--completed"
+                data-detail-status="completed"
+            >
+                <span class="arcanum-subject-stat-button__label">
+                    Bestanden
+                </span>
+                <strong class="arcanum-subject-stat-button__value">
+                    ${formatStageCount(subject.completedTasks.length)}
+                </strong>
+                <span class="arcanum-subject-stat-button__action">
+                    Münzen anzeigen
+                </span>
+            </button>
 
-            <div>
-                <dt>Gesperrt</dt>
-                <dd>${subject.lockedTasks.length} Etappen</dd>
-            </div>
-        </dl>
+            <button
+                type="button"
+                class="arcanum-subject-stat-button
+                       arcanum-subject-stat-button--locked"
+                data-detail-status="locked"
+            >
+                <span class="arcanum-subject-stat-button__label">
+                    Gesperrt
+                </span>
+                <strong class="arcanum-subject-stat-button__value">
+                    ${formatStageCount(subject.lockedTasks.length)}
+                </strong>
+                <span class="arcanum-subject-stat-button__action">
+                    Anzeigen
+                </span>
+            </button>
+        </div>
 
         <div class="arcanum-subject-actions">
             ${createRequestStatus(subject.requests)}
@@ -231,7 +269,346 @@ function createSubjectCard(subject) {
         </div>
     `;
 
+    card.querySelectorAll("[data-detail-status]").forEach(
+        button => {
+            button.addEventListener("click", () => {
+                openTaskDetails(
+                    subject,
+                    button.dataset.detailStatus
+                );
+            });
+        }
+    );
+
     return card;
+}
+
+
+const ARCANUM_TASK_DETAIL_CONFIG = {
+    current: {
+        label: "Aktuell",
+        description:
+            "Etappen, die derzeit bearbeitet werden.",
+        getTasks: subject => subject.selectedTasks,
+        empty:
+            "In diesem Fach wird aktuell keine Etappe bearbeitet."
+    },
+    completed: {
+        label: "Bestanden",
+        description:
+            "Bestandene Etappen und die dafür gutgeschriebenen Münzen.",
+        getTasks: subject => subject.completedTasks,
+        empty:
+            "In diesem Fach wurde noch keine Etappe bestanden."
+    },
+    locked: {
+        label: "Gesperrt",
+        description:
+            "Etappen, die derzeit nicht bearbeitet werden können.",
+        getTasks: subject => subject.lockedTasks,
+        empty:
+            "In diesem Fach gibt es keine gesperrten Etappen."
+    }
+};
+
+function openTaskDetails(subject, status) {
+    const config = ARCANUM_TASK_DETAIL_CONFIG[status];
+
+    if (!config) {
+        return;
+    }
+
+    const tasks = safeArray(config.getTasks(subject));
+    const groups = groupTasksByTopic(tasks);
+    const dialog = ensureTaskDetailsDialog();
+
+    const title = dialog.querySelector(
+        "[data-task-dialog-title]"
+    );
+    const subtitle = dialog.querySelector(
+        "[data-task-dialog-subtitle]"
+    );
+    const summary = dialog.querySelector(
+        "[data-task-dialog-summary]"
+    );
+    const content = dialog.querySelector(
+        "[data-task-dialog-content]"
+    );
+
+    title.textContent = `${subject.name} · ${config.label}`;
+    subtitle.textContent = config.description;
+
+    const totalCoins = calculateCoins(tasks);
+    const coinDescription = status === "completed"
+        ? `${totalCoins} Münzen gutgeschrieben`
+        : `${totalCoins} mögliche Münzen`;
+
+    summary.textContent =
+        `${formatStageCount(tasks.length)} · ${coinDescription}`;
+
+    if (groups.length === 0) {
+        content.innerHTML = `
+            <div class="arcanum-task-dialog__empty">
+                <p>${escapeHtml(config.empty)}</p>
+            </div>
+        `;
+    } else {
+        content.innerHTML = groups
+            .map(group => createTaskGroupHtml(group, status))
+            .join("");
+    }
+
+    if (typeof dialog.showModal === "function") {
+        if (!dialog.open) {
+            dialog.showModal();
+        }
+    } else {
+        dialog.setAttribute("open", "");
+    }
+}
+
+function ensureTaskDetailsDialog() {
+    let dialog = document.getElementById(
+        "arcanum-task-details-dialog"
+    );
+
+    if (dialog) {
+        return dialog;
+    }
+
+    dialog = document.createElement("dialog");
+    dialog.id = "arcanum-task-details-dialog";
+    dialog.className = "arcanum-task-dialog";
+
+    dialog.innerHTML = `
+        <div class="arcanum-task-dialog__panel">
+            <header class="arcanum-task-dialog__header">
+                <div>
+                    <p class="arcanum-eyebrow">Etappenübersicht</p>
+                    <h2 data-task-dialog-title>Etappen</h2>
+                    <p
+                        class="arcanum-task-dialog__subtitle"
+                        data-task-dialog-subtitle
+                    ></p>
+                </div>
+
+                <button
+                    type="button"
+                    class="arcanum-task-dialog__close"
+                    data-task-dialog-close
+                    aria-label="Etappenübersicht schließen"
+                >
+                    ×
+                </button>
+            </header>
+
+            <div
+                class="arcanum-task-dialog__summary"
+                data-task-dialog-summary
+            ></div>
+
+            <div
+                class="arcanum-task-dialog__content"
+                data-task-dialog-content
+            ></div>
+        </div>
+    `;
+
+    document.body.appendChild(dialog);
+
+    dialog.querySelector("[data-task-dialog-close]")
+        .addEventListener("click", () => dialog.close());
+
+    dialog.addEventListener("click", event => {
+        if (event.target === dialog) {
+            dialog.close();
+        }
+    });
+
+    return dialog;
+}
+
+function groupTasksByTopic(tasks) {
+    const groups = new Map();
+
+    safeArray(tasks).forEach(task => {
+        const topic = (
+            typeof task?.topic === "object" &&
+            task.topic !== null
+        )
+            ? task.topic
+            : null;
+
+        const topicId =
+            topic?.id ??
+            task?.topicId ??
+            task?.topic ??
+            "ohne-thema";
+
+        const topicName =
+            textValue(topic?.name) ||
+            (
+                topicId !== "ohne-thema"
+                    ? `Thema ${topicId}`
+                    : "Ohne Thema"
+            );
+
+        const topicNumber = Number(topic?.number);
+
+        const key = String(topicId);
+
+        if (!groups.has(key)) {
+            groups.set(key, {
+                id: topicId,
+                name: topicName,
+                number: Number.isFinite(topicNumber)
+                    ? topicNumber
+                    : Number.MAX_SAFE_INTEGER,
+                tasks: []
+            });
+        }
+
+        groups.get(key).tasks.push(task);
+    });
+
+    return [...groups.values()]
+        .map(group => ({
+            ...group,
+            tasks: [...group.tasks].sort(compareTasksForDetails)
+        }))
+        .sort((left, right) => {
+            if (left.number !== right.number) {
+                return left.number - right.number;
+            }
+
+            return left.name.localeCompare(
+                right.name,
+                "de",
+                { sensitivity: "base" }
+            );
+        });
+}
+
+function compareTasksForDetails(left, right) {
+    const levelDifference =
+        Number(left?.niveau || 99) -
+        Number(right?.niveau || 99);
+
+    if (levelDifference !== 0) {
+        return levelDifference;
+    }
+
+    return textValue(left?.name).localeCompare(
+        textValue(right?.name),
+        "de",
+        { sensitivity: "base" }
+    );
+}
+
+function createTaskGroupHtml(group, status) {
+    const groupCoins = calculateCoins(group.tasks);
+
+    const groupCoinText = status === "completed"
+        ? `${groupCoins} Münzen`
+        : `${groupCoins} mögliche Münzen`;
+
+    const taskRows = group.tasks
+        .map(task => createTaskDetailRowHtml(task, status))
+        .join("");
+
+    return `
+        <section class="arcanum-task-group">
+            <header class="arcanum-task-group__header">
+                <div>
+                    <span class="arcanum-task-group__overline">
+                        Thema
+                    </span>
+                    <h3>${escapeHtml(group.name)}</h3>
+                </div>
+
+                <div class="arcanum-task-group__summary">
+                    <span>${formatStageCount(group.tasks.length)}</span>
+                    <strong>${escapeHtml(groupCoinText)}</strong>
+                </div>
+            </header>
+
+            <ul class="arcanum-task-group__list">
+                ${taskRows}
+            </ul>
+        </section>
+    `;
+}
+
+function createTaskDetailRowHtml(task, status) {
+    const coins = calculateTaskCoins(task);
+    const level = getNiveauInformation(task?.niveau);
+
+    const coinText = coins > 0
+        ? (
+            status === "completed"
+                ? `${coins} Münzen`
+                : `${coins} mögliche Münzen`
+        )
+        : "Münzwert noch offen";
+
+    return `
+        <li class="arcanum-task-row">
+            <div class="arcanum-task-row__main">
+                <span
+                    class="arcanum-niveau-badge
+                           arcanum-niveau-badge--${level.cssClass}"
+                >
+                    ${escapeHtml(level.label)}
+                </span>
+
+                <strong class="arcanum-task-row__name">
+                    ${escapeHtml(
+                        textValue(task?.name) || "Unbenannte Etappe"
+                    )}
+                </strong>
+            </div>
+
+            <span class="arcanum-task-row__coins">
+                ${escapeHtml(coinText)}
+            </span>
+        </li>
+    `;
+}
+
+function getNiveauInformation(niveau) {
+    switch (Number(niveau)) {
+        case 1:
+            return {
+                label: "Wanderer",
+                cssClass: "wanderer"
+            };
+
+        case 2:
+            return {
+                label: "Bergsteiger",
+                cssClass: "bergsteiger"
+            };
+
+        case 3:
+            return {
+                label: "Gipfelstürmer",
+                cssClass: "gipfelstuermer"
+            };
+
+        default:
+            return {
+                label: "Niveau offen",
+                cssClass: "offen"
+            };
+    }
+}
+
+function formatStageCount(count) {
+    const value = Number(count) || 0;
+
+    return value === 1
+        ? "1 Etappe"
+        : `${value} Etappen`;
 }
 
 function createRequestStatus(requests) {

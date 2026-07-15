@@ -684,3 +684,322 @@ select {
     }
 }
 
+/* arcanum-task-details-v1 */
+
+.arcanum-subject-stat-button {
+    min-width: 0;
+    padding: 0.72rem;
+    border: 1px solid transparent;
+    border-radius: 0.85rem;
+    color: var(--arcanum-text);
+    background: rgba(255, 255, 255, 0.045);
+    cursor: pointer;
+    text-align: left;
+    transition:
+        border-color 140ms ease,
+        background 140ms ease,
+        transform 140ms ease;
+}
+
+.arcanum-subject-stat-button:hover {
+    border-color: rgba(233, 189, 85, 0.38);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+.arcanum-subject-stat-button:focus-visible {
+    outline: 0.18rem solid var(--arcanum-gold);
+    outline-offset: 0.15rem;
+}
+
+.arcanum-subject-stat-button--completed {
+    border-color: rgba(140, 191, 131, 0.16);
+}
+
+.arcanum-subject-stat-button--locked {
+    border-color: rgba(255, 180, 169, 0.12);
+}
+
+.arcanum-subject-stat-button__label,
+.arcanum-subject-stat-button__value,
+.arcanum-subject-stat-button__action {
+    display: block;
+}
+
+.arcanum-subject-stat-button__label {
+    color: var(--arcanum-muted);
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.arcanum-subject-stat-button__value {
+    margin-top: 0.18rem;
+    font-size: 0.84rem;
+}
+
+.arcanum-subject-stat-button__action {
+    margin-top: 0.35rem;
+    color: var(--arcanum-gold-light);
+    font-size: 0.65rem;
+}
+
+.arcanum-task-dialog {
+    width: min(52rem, calc(100% - 2rem));
+    max-height: min(48rem, calc(100vh - 2rem));
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--arcanum-border);
+    border-radius: 1.35rem;
+    color: var(--arcanum-text);
+    background: #18232d;
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.52);
+}
+
+.arcanum-task-dialog::backdrop {
+    background: rgba(5, 10, 14, 0.72);
+    backdrop-filter: blur(4px);
+}
+
+.arcanum-task-dialog__panel {
+    display: flex;
+    max-height: min(48rem, calc(100vh - 2rem));
+    flex-direction: column;
+}
+
+.arcanum-task-dialog__header {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1.35rem 1.4rem 1rem;
+    border-bottom: 1px solid var(--arcanum-border);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(55, 74, 66, 0.55),
+            rgba(24, 35, 45, 0.98)
+        );
+}
+
+.arcanum-task-dialog__header h2 {
+    margin: 0.2rem 0 0.3rem;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+.arcanum-task-dialog__subtitle {
+    max-width: 38rem;
+    margin: 0;
+    color: var(--arcanum-muted);
+    font-size: 0.84rem;
+}
+
+.arcanum-task-dialog__close {
+    display: grid;
+    width: 2.6rem;
+    height: 2.6rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid var(--arcanum-border);
+    border-radius: 50%;
+    color: var(--arcanum-text);
+    background: rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.arcanum-task-dialog__close:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.arcanum-task-dialog__summary {
+    padding: 0.75rem 1.4rem;
+    border-bottom: 1px solid var(--arcanum-border);
+    color: var(--arcanum-gold-light);
+    background: rgba(255, 255, 255, 0.025);
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.arcanum-task-dialog__content {
+    display: grid;
+    gap: 0.9rem;
+    overflow-y: auto;
+    padding: 1rem 1.4rem 1.4rem;
+}
+
+.arcanum-task-dialog__empty {
+    padding: 2.5rem 1rem;
+    border: 1px dashed var(--arcanum-border);
+    border-radius: 1rem;
+    color: var(--arcanum-muted);
+    text-align: center;
+}
+
+.arcanum-task-dialog__empty p {
+    margin: 0;
+}
+
+.arcanum-task-group {
+    overflow: hidden;
+    border: 1px solid var(--arcanum-border);
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.arcanum-task-group__header {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--arcanum-border);
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.arcanum-task-group__overline {
+    color: var(--arcanum-muted);
+    font-size: 0.63rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.arcanum-task-group__header h3 {
+    margin: 0.15rem 0 0;
+    font-size: 1rem;
+}
+
+.arcanum-task-group__summary {
+    text-align: right;
+}
+
+.arcanum-task-group__summary span,
+.arcanum-task-group__summary strong {
+    display: block;
+}
+
+.arcanum-task-group__summary span {
+    color: var(--arcanum-muted);
+    font-size: 0.68rem;
+}
+
+.arcanum-task-group__summary strong {
+    margin-top: 0.15rem;
+    color: var(--arcanum-gold-light);
+    font-size: 0.78rem;
+}
+
+.arcanum-task-group__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.arcanum-task-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+}
+
+.arcanum-task-row + .arcanum-task-row {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.arcanum-task-row__main {
+    display: flex;
+    min-width: 0;
+    gap: 0.7rem;
+    align-items: center;
+}
+
+.arcanum-task-row__name {
+    overflow: hidden;
+    font-size: 0.84rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.arcanum-task-row__coins {
+    flex: 0 0 auto;
+    color: var(--arcanum-gold-light);
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-align: right;
+}
+
+.arcanum-niveau-badge {
+    flex: 0 0 auto;
+    padding: 0.32rem 0.5rem;
+    border: 1px solid var(--arcanum-border);
+    border-radius: 999px;
+    font-size: 0.63rem;
+    font-weight: 850;
+}
+
+.arcanum-niveau-badge--wanderer {
+    color: #d8edc8;
+    background: rgba(87, 133, 75, 0.28);
+}
+
+.arcanum-niveau-badge--bergsteiger {
+    color: #ffe3a0;
+    background: rgba(148, 109, 46, 0.3);
+}
+
+.arcanum-niveau-badge--gipfelstuermer {
+    color: #dce8f2;
+    background: rgba(85, 109, 130, 0.34);
+}
+
+.arcanum-niveau-badge--offen {
+    color: var(--arcanum-muted);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+@media (max-width: 600px) {
+    .arcanum-task-dialog {
+        width: calc(100% - 1rem);
+        max-height: calc(100vh - 1rem);
+    }
+
+    .arcanum-task-dialog__panel {
+        max-height: calc(100vh - 1rem);
+    }
+
+    .arcanum-task-dialog__header,
+    .arcanum-task-dialog__content {
+        padding-right: 0.9rem;
+        padding-left: 0.9rem;
+    }
+
+    .arcanum-task-dialog__summary {
+        padding-right: 0.9rem;
+        padding-left: 0.9rem;
+    }
+
+    .arcanum-task-group__header,
+    .arcanum-task-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .arcanum-task-group__summary,
+    .arcanum-task-row__coins {
+        text-align: left;
+    }
+
+    .arcanum-task-row__main {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .arcanum-task-row__name {
+        white-space: normal;
+    }
+}
+
