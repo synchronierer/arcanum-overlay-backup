@@ -1,5 +1,138 @@
-%[student_dashboard;script=build_dashboard.js;nav=
-    !FOLLOWS
-]
-%[student_dashboard_nav]
-<!-- arcanum-overlay-student-baseline -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+    <title>Arcanum – Mein Lernweg</title>
+
+    <link rel="stylesheet" href="/arcanum-student.css">
+</head>
+
+<body class="arcanum-page">
+    <div class="arcanum-app">
+        <header class="arcanum-hero">
+            <div class="arcanum-hero__landscape" aria-hidden="true"></div>
+
+            <div class="arcanum-profile">
+                <div
+                    class="arcanum-avatar"
+                    id="student-avatar"
+                    aria-label="Profilbild"
+                >
+                    <span id="student-initials">?</span>
+                </div>
+
+                <div class="arcanum-profile__identity">
+                    <p class="arcanum-eyebrow">Basiscamp Arcanum</p>
+
+                    <h1 id="student-name">Schülerprofil wird geladen …</h1>
+
+                    <div class="arcanum-profile__details">
+                        <span>
+                            Klasse
+                            <strong id="student-class">–</strong>
+                        </span>
+
+                        <span>
+                            Graduierung
+                            <strong id="student-graduation">Starter</strong>
+                        </span>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="arcanum-button arcanum-button--secondary"
+                        id="avatar-button"
+                        disabled
+                        title="Der Avatar-Creator wird in einem späteren Schritt eingebunden."
+                    >
+                        Avatar bearbeiten
+                    </button>
+                </div>
+
+                <div class="arcanum-profile__score">
+                    <div class="arcanum-score-card">
+                        <span class="arcanum-score-card__label">
+                            Gesamtmünzen
+                        </span>
+
+                        <strong
+                            class="arcanum-score-card__value"
+                            id="total-coins"
+                        >
+                            0
+                        </strong>
+                    </div>
+
+                    <div class="arcanum-score-card">
+                        <span class="arcanum-score-card__label">
+                            Platz
+                        </span>
+
+                        <strong
+                            class="arcanum-score-card__value
+                                   arcanum-score-card__value--small"
+                            id="student-rank"
+                        >
+                            noch offen
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="arcanum-logo-placeholder" aria-label="Arcanum">
+                    <span>A</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="arcanum-main">
+            <section class="arcanum-intro">
+                <div>
+                    <p class="arcanum-eyebrow">Dein Lernweg</p>
+                    <h2>Deine Fächer</h2>
+                </div>
+
+                <p class="arcanum-intro__text" id="dashboard-summary">
+                    Deine Lerndaten werden geladen.
+                </p>
+            </section>
+
+            <section
+                class="arcanum-subject-grid"
+                id="subject-list"
+                aria-live="polite"
+            >
+                <article class="arcanum-loading-card">
+                    <div class="arcanum-spinner" aria-hidden="true"></div>
+                    <p>Fächer werden geladen …</p>
+                </article>
+            </section>
+
+            <section class="arcanum-grade-guide" aria-labelledby="grade-title">
+                <div>
+                    <p class="arcanum-eyebrow">Orientierung</p>
+                    <h2 id="grade-title">Münzen und Notenstufen</h2>
+                </div>
+
+                <div class="arcanum-grade-scale">
+                    <span><strong>15</strong> Note 5</span>
+                    <span><strong>45</strong> Note 4</span>
+                    <span><strong>56</strong> Note 3</span>
+                    <span><strong>71</strong> Note 2</span>
+                    <span><strong>86</strong> Note 1</span>
+                </div>
+            </section>
+
+            <p class="arcanum-error" id="dashboard-error" hidden></p>
+        </main>
+    </div>
+
+    <script src="/student-database.js"></script>
+    <script src="/build_dashboard.js"></script>
+
+    <!-- arcanum-overlay-student-v1 -->
+</body>
+</html>

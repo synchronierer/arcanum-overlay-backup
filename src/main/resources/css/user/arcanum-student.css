@@ -1,0 +1,567 @@
+:root {
+    color-scheme: dark;
+
+    --arcanum-bg: #111820;
+    --arcanum-bg-soft: #18232d;
+    --arcanum-panel: rgba(28, 39, 49, 0.96);
+    --arcanum-panel-light: #24333f;
+    --arcanum-border: rgba(255, 255, 255, 0.1);
+    --arcanum-text: #f7f4e9;
+    --arcanum-muted: #bac4ca;
+    --arcanum-gold: #e9bd55;
+    --arcanum-gold-light: #ffe39a;
+    --arcanum-green: #8cbf83;
+    --arcanum-danger: #ffb4a9;
+    --arcanum-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+    background: var(--arcanum-bg);
+}
+
+body.arcanum-page {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    color: var(--arcanum-text);
+    background:
+        radial-gradient(circle at 12% 0%, rgba(82, 116, 100, 0.25), transparent 32rem),
+        var(--arcanum-bg);
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+.arcanum-app {
+    min-height: 100vh;
+}
+
+.arcanum-hero {
+    position: relative;
+    min-height: 21rem;
+    overflow: hidden;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(239, 201, 130, 0.95) 0%,
+            rgba(189, 170, 120, 0.78) 38%,
+            rgba(53, 80, 68, 0.95) 100%
+        );
+}
+
+.arcanum-hero__landscape {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 78% 20%, rgba(255, 242, 180, 0.88) 0 4rem, transparent 4.15rem),
+        linear-gradient(145deg, transparent 48%, rgba(52, 73, 63, 0.62) 48.5% 61%, transparent 61.5%),
+        linear-gradient(215deg, transparent 50%, rgba(72, 92, 75, 0.72) 50.5% 69%, transparent 69.5%);
+    opacity: 0.8;
+}
+
+.arcanum-profile {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: auto minmax(16rem, 1fr) auto auto;
+    gap: 1.5rem;
+    align-items: center;
+    width: min(1180px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 3rem 0 5.5rem;
+}
+
+.arcanum-avatar {
+    display: grid;
+    width: 9rem;
+    height: 9rem;
+    place-items: center;
+    border: 0.45rem solid var(--arcanum-gold);
+    border-radius: 50%;
+    color: #17211c;
+    background:
+        radial-gradient(circle at 35% 30%, #fff3c9, #c49a4b 72%);
+    box-shadow:
+        0 0 0 0.3rem rgba(47, 45, 31, 0.35),
+        var(--arcanum-shadow);
+    font-size: 2.25rem;
+    font-weight: 900;
+}
+
+.arcanum-profile__identity {
+    color: #18231e;
+}
+
+.arcanum-profile__identity h1 {
+    max-width: 18ch;
+    margin: 0.15rem 0 0.65rem;
+    font-size: clamp(2rem, 4vw, 3.7rem);
+    line-height: 0.98;
+}
+
+.arcanum-eyebrow {
+    margin: 0;
+    color: var(--arcanum-gold-light);
+    font-size: 0.76rem;
+    font-weight: 850;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.arcanum-profile__identity .arcanum-eyebrow {
+    color: #4b492e;
+}
+
+.arcanum-profile__details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem 1.25rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.arcanum-profile__details span {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.arcanum-profile__score {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.arcanum-score-card {
+    min-width: 9.5rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 1rem;
+    color: var(--arcanum-text);
+    background: rgba(20, 29, 34, 0.82);
+    box-shadow: var(--arcanum-shadow);
+    backdrop-filter: blur(8px);
+}
+
+.arcanum-score-card__label {
+    display: block;
+    margin-bottom: 0.2rem;
+    color: var(--arcanum-muted);
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.arcanum-score-card__value {
+    color: var(--arcanum-gold-light);
+    font-size: 2rem;
+}
+
+.arcanum-score-card__value--small {
+    font-size: 1rem;
+}
+
+.arcanum-logo-placeholder {
+    display: grid;
+    width: 5rem;
+    height: 5rem;
+    place-items: center;
+    border: 0.2rem solid rgba(255, 255, 255, 0.72);
+    border-radius: 50%;
+    color: #392f17;
+    background: var(--arcanum-gold);
+    box-shadow: var(--arcanum-shadow);
+    font-family: Georgia, serif;
+    font-size: 2.6rem;
+    font-weight: 900;
+}
+
+.arcanum-main {
+    position: relative;
+    z-index: 2;
+    width: min(1180px, calc(100% - 2rem));
+    margin: -3.2rem auto 0;
+    padding-bottom: 3rem;
+}
+
+.arcanum-intro,
+.arcanum-grade-guide {
+    display: flex;
+    gap: 2rem;
+    align-items: end;
+    justify-content: space-between;
+    padding: 1.35rem 1.5rem;
+    border: 1px solid var(--arcanum-border);
+    border-radius: 1.25rem;
+    background: rgba(23, 33, 42, 0.97);
+    box-shadow: var(--arcanum-shadow);
+}
+
+.arcanum-intro h2,
+.arcanum-grade-guide h2 {
+    margin: 0.15rem 0 0;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.arcanum-intro__text {
+    max-width: 42rem;
+    margin: 0;
+    color: var(--arcanum-muted);
+    text-align: right;
+}
+
+.arcanum-subject-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.arcanum-subject-card,
+.arcanum-empty-state,
+.arcanum-loading-card {
+    border: 1px solid var(--arcanum-border);
+    border-radius: 1.25rem;
+    background:
+        linear-gradient(145deg, rgba(39, 55, 66, 0.98), rgba(24, 35, 44, 0.98));
+    box-shadow: var(--arcanum-shadow);
+}
+
+.arcanum-subject-card {
+    min-width: 0;
+    padding: 1.2rem;
+}
+
+.arcanum-subject-card__top {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.9rem;
+    align-items: center;
+}
+
+.arcanum-subject-icon {
+    display: grid;
+    width: 3.15rem;
+    height: 3.15rem;
+    place-items: center;
+    border: 1px solid rgba(255, 227, 154, 0.35);
+    border-radius: 0.95rem;
+    color: #242014;
+    background: var(--arcanum-gold);
+    font-size: 1.2rem;
+    font-weight: 900;
+}
+
+.arcanum-subject-card__title {
+    min-width: 0;
+}
+
+.arcanum-subject-card__title h3 {
+    overflow: hidden;
+    margin: 0;
+    font-size: 1.15rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.arcanum-subject-card__title p {
+    overflow: hidden;
+    margin: 0.25rem 0 0;
+    color: var(--arcanum-muted);
+    font-size: 0.84rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.arcanum-coin-badge {
+    text-align: right;
+}
+
+.arcanum-coin-badge strong,
+.arcanum-coin-badge span {
+    display: block;
+}
+
+.arcanum-coin-badge strong {
+    color: var(--arcanum-gold-light);
+    font-size: 1.65rem;
+    line-height: 1;
+}
+
+.arcanum-coin-badge span {
+    margin-top: 0.2rem;
+    color: var(--arcanum-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+.arcanum-progress {
+    margin: 1.2rem 0;
+}
+
+.arcanum-progress__labels {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 0.45rem;
+    color: var(--arcanum-muted);
+    font-size: 0.76rem;
+}
+
+.arcanum-progress__labels strong {
+    color: var(--arcanum-text);
+    text-align: right;
+}
+
+.arcanum-progress__track {
+    height: 0.6rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.arcanum-progress__track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background:
+        linear-gradient(90deg, var(--arcanum-green), var(--arcanum-gold));
+}
+
+.arcanum-subject-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.55rem;
+    margin: 0;
+}
+
+.arcanum-subject-stats div {
+    padding: 0.7rem;
+    border-radius: 0.85rem;
+    background: rgba(255, 255, 255, 0.045);
+}
+
+.arcanum-subject-stats dt {
+    margin-bottom: 0.2rem;
+    color: var(--arcanum-muted);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+}
+
+.arcanum-subject-stats dd {
+    margin: 0;
+    font-size: 0.82rem;
+    font-weight: 750;
+}
+
+.arcanum-subject-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.arcanum-request-status {
+    margin: 0;
+    color: var(--arcanum-muted);
+    font-size: 0.76rem;
+}
+
+.arcanum-request-status--active {
+    color: var(--arcanum-gold-light);
+}
+
+.arcanum-button {
+    min-height: 2.6rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    font-weight: 800;
+}
+
+.arcanum-button--secondary {
+    border-color: rgba(26, 34, 29, 0.35);
+    color: #17211c;
+    background: rgba(255, 255, 255, 0.45);
+}
+
+.arcanum-button--card {
+    color: #2b2517;
+    background: var(--arcanum-gold);
+}
+
+.arcanum-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+}
+
+.arcanum-grade-guide {
+    align-items: center;
+}
+
+.arcanum-grade-scale {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.arcanum-grade-scale span {
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--arcanum-border);
+    border-radius: 999px;
+    color: var(--arcanum-muted);
+    background: rgba(255, 255, 255, 0.04);
+    font-size: 0.75rem;
+}
+
+.arcanum-grade-scale strong {
+    margin-right: 0.2rem;
+    color: var(--arcanum-gold-light);
+}
+
+.arcanum-empty-state,
+.arcanum-loading-card {
+    grid-column: 1 / -1;
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+.arcanum-empty-state h3 {
+    margin: 0.65rem 0 0.35rem;
+}
+
+.arcanum-empty-state p,
+.arcanum-loading-card p {
+    margin: 0;
+    color: var(--arcanum-muted);
+}
+
+.arcanum-empty-state__symbol {
+    font-size: 2.5rem;
+}
+
+.arcanum-spinner {
+    width: 2rem;
+    height: 2rem;
+    margin: 0 auto 0.8rem;
+    border: 0.2rem solid rgba(255, 255, 255, 0.14);
+    border-top-color: var(--arcanum-gold);
+    border-radius: 50%;
+    animation: arcanum-spin 0.8s linear infinite;
+}
+
+.arcanum-error {
+    padding: 1rem;
+    border: 1px solid rgba(255, 180, 169, 0.35);
+    border-radius: 1rem;
+    color: var(--arcanum-danger);
+    background: rgba(105, 35, 35, 0.28);
+}
+
+@keyframes arcanum-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 900px) {
+    .arcanum-profile {
+        grid-template-columns: auto 1fr auto;
+    }
+
+    .arcanum-profile__score {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .arcanum-logo-placeholder {
+        position: absolute;
+        top: 1rem;
+        right: 0;
+        width: 4rem;
+        height: 4rem;
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 700px) {
+    .arcanum-hero {
+        min-height: 26rem;
+    }
+
+    .arcanum-profile {
+        grid-template-columns: 1fr;
+        padding-top: 2rem;
+        text-align: center;
+    }
+
+    .arcanum-avatar {
+        width: 7rem;
+        height: 7rem;
+        margin: 0 auto;
+    }
+
+    .arcanum-profile__identity h1 {
+        max-width: none;
+    }
+
+    .arcanum-profile__details {
+        justify-content: center;
+    }
+
+    .arcanum-subject-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .arcanum-intro,
+    .arcanum-grade-guide {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .arcanum-intro__text {
+        text-align: left;
+    }
+
+    .arcanum-grade-scale {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 450px) {
+    .arcanum-main,
+    .arcanum-profile {
+        width: min(100% - 1rem, 1180px);
+    }
+
+    .arcanum-subject-card__top {
+        grid-template-columns: auto 1fr;
+    }
+
+    .arcanum-coin-badge {
+        grid-column: 1 / -1;
+        text-align: left;
+    }
+
+    .arcanum-subject-stats {
+        grid-template-columns: 1fr;
+    }
+}

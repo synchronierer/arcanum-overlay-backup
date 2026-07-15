@@ -1,0 +1,9 @@
+{
+  "/arcanum-student.css": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": ["user"],
+    "context": "css",
+    "access_level": "student"
+  }
+}
