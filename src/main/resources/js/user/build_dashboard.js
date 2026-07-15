@@ -50,7 +50,10 @@ function renderStudentProfile(studentData) {
     setText("student-initials", createInitials(firstName, lastName));
 
     const completedTasks = safeArray(studentData?.completedTasks);
-    setText("total-coins", String(completedTasks.length));
+    setText(
+        "total-coins",
+        String(calculateCoins(completedTasks))
+    );
 
     /*
      * Das aktuelle Backend stellt noch keinen Rang-Endpunkt bereit.
@@ -86,12 +89,13 @@ async function createSubjectModel(subject, studentData) {
          * Das ist ein gültiger Leerzustand und kein Dashboard-Abbruch.
          */
         console.debug(
-            `Für ${subject.name} ist noch keine Etappe zugewiesen.`,
+            `Für ${subject.name} ist noch kein Thema zugewiesen.`,
             error
         );
     }
 
-    const coins = completedForSubject.length;
+    const coins = calculateCoins(completedForSubject);
+    const currentGrade = calculateCurrentGrade(coins);
     const nextGrade = calculateNextGrade(coins);
 
     return {
@@ -102,6 +106,7 @@ async function createSubjectModel(subject, studentData) {
         selectedTasks: selectedForSubject,
         completedTasks: completedForSubject,
         lockedTasks: lockedForSubject,
+        currentGrade,
         nextGrade,
         requests: safeArray(
             studentData?.currentRequests?.[subject.id]
@@ -146,7 +151,7 @@ function createSubjectCard(subject) {
     const progress = calculateGradeProgress(subject.coins, subject.nextGrade);
     const topicName = subject.currentTopic?.name
         ? textValue(subject.currentTopic.name)
-        : "Noch keine Etappe zugewiesen";
+        : "Noch kein Thema zugewiesen";
 
     const nextGradeText = subject.nextGrade
         ? `${subject.nextGrade.remaining} Münzen bis Note ${subject.nextGrade.grade}`
@@ -186,6 +191,16 @@ function createSubjectCard(subject) {
             </div>
         </div>
 
+        <div class="arcanum-current-grade ${subject.currentGrade.cssClass}">
+            <span class="arcanum-current-grade__label">
+                Aktuelle Bewertung
+            </span>
+
+            <strong class="arcanum-current-grade__value">
+                ${escapeHtml(subject.currentGrade.display)}
+            </strong>
+        </div>
+
         <dl class="arcanum-subject-stats">
             <div>
                 <dt>Aktuell</dt>
@@ -193,7 +208,7 @@ function createSubjectCard(subject) {
             </div>
 
             <div>
-                <dt>Erledigt</dt>
+                <dt>Bestanden</dt>
                 <dd>${subject.completedTasks.length} Etappen</dd>
             </div>
 
@@ -254,6 +269,71 @@ function renderSummary(subjectModels) {
               `${activeSubjects} mit aktueller Etappe · ` +
               `${totalCoins} erreichte Münzen`
     );
+}
+
+
+
+function calculateTaskCoins(task) {
+    /*
+     * Übergangslogik bis das Backend einen eigenen Münzwert
+     * pro Etappe bereitstellt:
+     *
+     * 1 Prozentpunkt = 1 Münze.
+     *
+     * Das aktuelle Backend liefert ratio üblicherweise als
+     * Dezimalanteil, beispielsweise 0.075 für 7,5 Prozent.
+     * Jede bestandene Etappe wird einzeln auf eine ganze
+     * Münze kaufmännisch gerundet.
+     */
+
+    const explicitCoins = Number(
+        task?.coins ??
+        task?.coinValue ??
+        task?.muenzen
+    );
+
+    if (Number.isFinite(explicitCoins) && explicitCoins >= 0) {
+        return Math.round(explicitCoins);
+    }
+
+    const ratio = Number(task?.ratio);
+
+    if (!Number.isFinite(ratio) || ratio <= 0) {
+        return 0;
+    }
+
+    const percentagePoints = ratio <= 1
+        ? ratio * 100
+        : ratio;
+
+    return Math.max(0, Math.round(percentagePoints));
+}
+
+function calculateCoins(tasks) {
+    return safeArray(tasks).reduce(
+        (sum, task) => sum + calculateTaskCoins(task),
+        0
+    );
+}
+
+function calculateCurrentGrade(coins) {
+    const reachedGrade = [...ARCANUM_GRADES]
+        .reverse()
+        .find(item => coins >= item.coins);
+
+    if (!reachedGrade) {
+        return {
+            grade: null,
+            display: "Noch unter Note 5",
+            cssClass: "arcanum-current-grade--below"
+        };
+    }
+
+    return {
+        grade: reachedGrade.grade,
+        display: `Note ${reachedGrade.grade} · ${reachedGrade.label}`,
+        cssClass: `arcanum-current-grade--${reachedGrade.grade}`
+    };
 }
 
 function calculateNextGrade(coins) {

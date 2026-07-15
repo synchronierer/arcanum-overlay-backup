@@ -609,3 +609,78 @@ select {
         grid-template-columns: 1fr;
     }
 }
+
+/* arcanum-current-grade-v1 */
+
+.arcanum-current-grade {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 0 1rem;
+    padding: 0.72rem 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.9rem;
+    background: rgba(255, 255, 255, 0.045);
+}
+
+.arcanum-current-grade__label {
+    color: var(--arcanum-muted);
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.arcanum-current-grade__value {
+    color: var(--arcanum-text);
+    font-size: 0.83rem;
+    text-align: right;
+}
+
+.arcanum-current-grade--below {
+    border-color: rgba(255, 180, 169, 0.22);
+    background: rgba(104, 44, 41, 0.18);
+}
+
+.arcanum-current-grade--5 {
+    border-color: rgba(213, 166, 105, 0.28);
+    background: rgba(104, 72, 40, 0.2);
+}
+
+.arcanum-current-grade--4 {
+    border-color: rgba(222, 196, 104, 0.3);
+    background: rgba(102, 88, 38, 0.2);
+}
+
+.arcanum-current-grade--3 {
+    border-color: rgba(162, 194, 112, 0.3);
+    background: rgba(62, 86, 47, 0.2);
+}
+
+.arcanum-current-grade--2 {
+    border-color: rgba(119, 190, 135, 0.32);
+    background: rgba(40, 88, 57, 0.22);
+}
+
+.arcanum-current-grade--1 {
+    border-color: rgba(255, 227, 154, 0.4);
+    background:
+        linear-gradient(
+            90deg,
+            rgba(133, 101, 35, 0.26),
+            rgba(72, 104, 61, 0.24)
+        );
+}
+
+@media (max-width: 450px) {
+    .arcanum-current-grade {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .arcanum-current-grade__value {
+        text-align: left;
+    }
+}
+
