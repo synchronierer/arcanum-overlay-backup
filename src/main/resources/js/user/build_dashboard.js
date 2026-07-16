@@ -378,6 +378,13 @@ function createSubjectCard(subject) {
                 data-request-message
                 aria-live="polite"
             ></p>
+
+            <div
+                class="arcanum-partner-results"
+                data-partner-results
+                aria-live="polite"
+                hidden
+            ></div>
         </section>
 
         <div
@@ -946,6 +953,14 @@ async function toggleSubjectRequest(subject, button, card) {
 
             message.classList.add("is-success");
         }
+
+        if (type === "partner") {
+            if (isActive) {
+                await loadPartnerMatches(subject, card);
+            } else {
+                hidePartnerMatches(card);
+            }
+        }
     } catch (error) {
         console.error(
             "Arcanum: Fachmeldung konnte nicht geändert werden.",
@@ -982,6 +997,310 @@ function updateSubjectRequestButton(button, type, isActive) {
             ? texts.active
             : texts.inactive;
     }
+}
+
+
+function extractEntityId(value) {
+    if (value && typeof value === "object") {
+        const nestedId =
+            value.id ??
+            value.value ??
+            value.classId ??
+            value.class_id ??
+            value.topicId ??
+            value.topic_id;
+
+        const parsedNestedId = Number(nestedId);
+
+        return Number.isFinite(parsedNestedId)
+            ? parsedNestedId
+            : null;
+    }
+
+    const parsedValue = Number(value);
+
+    return Number.isFinite(parsedValue)
+        ? parsedValue
+        : null;
+}
+
+function getStudentClassId(student) {
+    return extractEntityId(
+        student?.class ??
+        student?.schoolClass ??
+        student?.classId ??
+        student?.class_id
+    );
+}
+
+function getSubjectTopicId(subject) {
+    return extractEntityId(
+        subject?.currentTopic ??
+        subject?.topic ??
+        subject?.current_topic ??
+        subject?.topicId ??
+        subject?.topic_id
+    );
+}
+
+function hidePartnerMatches(card) {
+    const container = card.querySelector(
+        "[data-partner-results]"
+    );
+
+    if (!container) {
+        return;
+    }
+
+    container.hidden = true;
+    container.innerHTML = "";
+}
+
+async function loadPartnerMatches(subject, card) {
+    const container = card.querySelector(
+        "[data-partner-results]"
+    );
+
+    if (!container) {
+        return;
+    }
+
+    container.hidden = false;
+    container.innerHTML = `
+        <div class="arcanum-partner-results__status">
+            Passende Lernpartner werden gesucht …
+        </div>
+    `;
+
+    try {
+        const student = await getArcanumCurrentStudent();
+
+        const studentId = extractEntityId(student?.id);
+        const classId = getStudentClassId(student);
+        const subjectId = extractEntityId(subject?.id);
+        const topicId = getSubjectTopicId(subject);
+
+        if (
+            studentId === null ||
+            classId === null ||
+            subjectId === null ||
+            topicId === null
+        ) {
+            throw new Error(
+                "Schüler-, Klassen-, Fach- oder Themendaten fehlen."
+            );
+        }
+
+        const response = await fetch("/search-partner", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                studentId,
+                classId,
+                subjectId,
+                topicId
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Partnersuche fehlgeschlagen (${response.status}).`
+            );
+        }
+
+        const payload = await response.json();
+
+        const rawPartners = Array.isArray(payload)
+            ? payload
+            : safeArray(
+                payload?.partners ??
+                payload?.students ??
+                payload?.results
+            );
+
+        const partners = normalisePartnerMatches(
+            rawPartners,
+            studentId
+        );
+
+        renderPartnerMatches(
+            container,
+            partners,
+            subject
+        );
+    } catch (error) {
+        console.error(
+            "Arcanum: Partnersuche konnte nicht geladen werden.",
+            error
+        );
+
+        container.innerHTML = `
+            <div
+                class="arcanum-partner-results__status
+                       arcanum-partner-results__status--error"
+            >
+                Die passenden Lernpartner konnten nicht geladen
+                werden. Bitte versuche es erneut.
+            </div>
+        `;
+    }
+}
+
+function normalisePartnerMatches(partners, ownStudentId) {
+    const uniquePartners = new Map();
+
+    safeArray(partners).forEach((partner, index) => {
+        const partnerId = extractEntityId(
+            partner?.id ??
+            partner?.studentId ??
+            partner?.student_id
+        );
+
+        if (
+            partnerId !== null &&
+            partnerId === ownStudentId
+        ) {
+            return;
+        }
+
+        const name = getPartnerDisplayName(partner);
+
+        if (!name) {
+            return;
+        }
+
+        const key = partnerId !== null
+            ? `id:${partnerId}`
+            : `name:${name.toLocaleLowerCase("de")}:${index}`;
+
+        uniquePartners.set(key, {
+            ...partner,
+            id: partnerId,
+            displayName: name
+        });
+    });
+
+    return [...uniquePartners.values()].sort(
+        (left, right) => left.displayName.localeCompare(
+            right.displayName,
+            "de",
+            { sensitivity: "base" }
+        )
+    );
+}
+
+function getPartnerDisplayName(partner) {
+    const directName = textValue(
+        partner?.name ??
+        partner?.displayName ??
+        partner?.display_name
+    ).trim();
+
+    if (directName) {
+        return directName;
+    }
+
+    const firstName = textValue(
+        partner?.firstName ??
+        partner?.first_name
+    ).trim();
+
+    const lastName = textValue(
+        partner?.lastName ??
+        partner?.last_name
+    ).trim();
+
+    return `${firstName} ${lastName}`.trim();
+}
+
+function getPartnerInitials(name) {
+    const parts = textValue(name)
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+    if (parts.length === 0) {
+        return "?";
+    }
+
+    if (parts.length === 1) {
+        return parts[0].slice(0, 2).toUpperCase();
+    }
+
+    return (
+        parts[0].slice(0, 1) +
+        parts[parts.length - 1].slice(0, 1)
+    ).toUpperCase();
+}
+
+function renderPartnerMatches(container, partners, subject) {
+    if (partners.length === 0) {
+        container.innerHTML = `
+            <div class="arcanum-partner-results__status">
+                Im Moment sucht hier noch kein passender
+                Lernpartner.
+            </div>
+        `;
+
+        return;
+    }
+
+    const topicName = textValue(
+        subject?.currentTopic?.name ??
+        subject?.topic?.name
+    ).trim();
+
+    const heading = partners.length === 1
+        ? "1 passender Lernpartner"
+        : `${partners.length} passende Lernpartner`;
+
+    const topicText = topicName
+        ? ` für das Thema ${topicName}`
+        : "";
+
+    const cards = partners.map(partner => `
+        <article class="arcanum-partner-card">
+            <span
+                class="arcanum-partner-card__avatar"
+                aria-hidden="true"
+            >
+                ${escapeHtml(
+                    getPartnerInitials(partner.displayName)
+                )}
+            </span>
+
+            <div class="arcanum-partner-card__identity">
+                <strong>
+                    ${escapeHtml(partner.displayName)}
+                </strong>
+
+                <span>sucht ebenfalls einen Partner</span>
+            </div>
+        </article>
+    `).join("");
+
+    container.innerHTML = `
+        <header class="arcanum-partner-results__header">
+            <div>
+                <span class="arcanum-partner-results__overline">
+                    Partnersuche
+                </span>
+
+                <strong>${escapeHtml(heading)}</strong>
+            </div>
+
+            <span class="arcanum-partner-results__topic">
+                ${escapeHtml(topicText)}
+            </span>
+        </header>
+
+        <div class="arcanum-partner-results__grid">
+            ${cards}
+        </div>
+    `;
 }
 
 function createRequestStatus(requests) {
