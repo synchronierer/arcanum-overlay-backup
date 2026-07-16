@@ -2,8 +2,46 @@
   "/arcanum-student.css": {
     "type": "GET",
     "handler_type": "FileRequestHandler",
-    "namespaces": ["user"],
+    "namespaces": [
+      "user"
+    ],
     "context": "css",
     "access_level": "student"
+  },
+  "/arcanum-login-background.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "login"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-logo.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "login"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-stamp.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "login"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-coin.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "login"
+    ],
+    "context": "imgs",
+    "access_level": "public"
   }
 }
