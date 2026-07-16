@@ -201,6 +201,185 @@ function createSubjectCard(subject) {
             </strong>
         </div>
 
+        <section
+            class="arcanum-subject-actions
+                   arcanum-subject-actions--vertical"
+            aria-label="Aktionen für ${escapeHtml(subject.name)}"
+        >
+            <header class="arcanum-subject-actions__heading">
+                <span class="arcanum-subject-actions__overline">
+                    Aktionen
+                </span>
+
+                <strong>Was brauchst du?</strong>
+            </header>
+
+            <div class="arcanum-subject-actions__grid">
+                <button
+                    type="button"
+                    class="arcanum-request-button${
+                        isSubjectRequestActive(subject, "hilfe")
+                            ? " is-active"
+                            : ""
+                    }"
+                    data-subject-request="hilfe"
+                    aria-label="Hilfe anfordern"
+                    aria-pressed="${
+                        isSubjectRequestActive(subject, "hilfe")
+                    }"
+                >
+                    <span
+                        class="arcanum-request-button__symbol"
+                        aria-hidden="true"
+                    >
+                        ?
+                    </span>
+
+                    <strong class="arcanum-request-button__label">
+                        Hilfe
+                    </strong>
+
+                    <span
+                        class="arcanum-request-button__status"
+                        data-request-status
+                    >
+                        ${
+                            isSubjectRequestActive(subject, "hilfe")
+                                ? "aktiv"
+                                : "inaktiv"
+                        }
+                    </span>
+                </button>
+
+                <button
+                    type="button"
+                    class="arcanum-request-button${
+                        isSubjectRequestActive(subject, "partner")
+                            ? " is-active"
+                            : ""
+                    }"
+                    data-subject-request="partner"
+                    aria-label="Partnersuche ein- oder ausschalten"
+                    aria-pressed="${
+                        isSubjectRequestActive(subject, "partner")
+                    }"
+                >
+                    <span
+                        class="arcanum-request-button__symbol"
+                        aria-hidden="true"
+                    >
+                        ⇄
+                    </span>
+
+                    <strong class="arcanum-request-button__label">
+                        Partner
+                    </strong>
+
+                    <span
+                        class="arcanum-request-button__status"
+                        data-request-status
+                    >
+                        ${
+                            isSubjectRequestActive(subject, "partner")
+                                ? "aktiv"
+                                : "inaktiv"
+                        }
+                    </span>
+                </button>
+
+                <button
+                    type="button"
+                    class="arcanum-request-button${
+                        isSubjectRequestActive(subject, "betreuung")
+                            ? " is-active"
+                            : ""
+                    }"
+                    data-subject-request="betreuung"
+                    aria-label="Betreuung für ein Experiment anfordern"
+                    aria-pressed="${
+                        isSubjectRequestActive(subject, "betreuung")
+                    }"
+                >
+                    <span
+                        class="arcanum-request-button__symbol"
+                        aria-hidden="true"
+                    >
+                        ⚗
+                    </span>
+
+                    <strong class="arcanum-request-button__label">
+                        Experiment
+                    </strong>
+
+                    <span
+                        class="arcanum-request-button__status"
+                        data-request-status
+                    >
+                        ${
+                            isSubjectRequestActive(subject, "betreuung")
+                                ? "aktiv"
+                                : "inaktiv"
+                        }
+                    </span>
+                </button>
+
+                <button
+                    type="button"
+                    class="arcanum-request-button${
+                        isSubjectRequestActive(
+                            subject,
+                            "gelingensnachweis"
+                        )
+                            ? " is-active"
+                            : ""
+                    }"
+                    data-subject-request="gelingensnachweis"
+                    aria-label="Bereitschaft für den Gelingensnachweis melden"
+                    aria-pressed="${
+                        isSubjectRequestActive(
+                            subject,
+                            "gelingensnachweis"
+                        )
+                    }"
+                >
+                    <span
+                        class="arcanum-request-button__symbol"
+                        aria-hidden="true"
+                    >
+                        ✓
+                    </span>
+
+                    <strong class="arcanum-request-button__label">
+                        Gelingensnachweis
+                    </strong>
+
+                    <span
+                        class="arcanum-request-button__status"
+                        data-request-status
+                    >
+                        ${
+                            isSubjectRequestActive(
+                                subject,
+                                "gelingensnachweis"
+                            )
+                                ? "aktiv"
+                                : "inaktiv"
+                        }
+                    </span>
+                </button>
+            </div>
+
+            <p class="arcanum-subject-actions__instruction">
+                Antippen, um eine Meldung ein- oder auszuschalten.
+            </p>
+
+            <p
+                class="arcanum-subject-actions__message"
+                data-request-message
+                aria-live="polite"
+            ></p>
+        </section>
+
         <div
             class="arcanum-subject-stats"
             aria-label="Etappenstatus für ${escapeHtml(subject.name)}"
@@ -275,6 +454,18 @@ function createSubjectCard(subject) {
                 openTaskDetails(
                     subject,
                     button.dataset.detailStatus
+                );
+            });
+        }
+    );
+
+    card.querySelectorAll("[data-subject-request]").forEach(
+        button => {
+            button.addEventListener("click", async () => {
+                await toggleSubjectRequest(
+                    subject,
+                    button,
+                    card
                 );
             });
         }
@@ -609,6 +800,188 @@ function formatStageCount(count) {
     return value === 1
         ? "1 Etappe"
         : `${value} Etappen`;
+}
+
+
+let arcanumCurrentStudentPromise = null;
+
+const ARCANUM_REQUEST_TEXTS = {
+    hilfe: {
+        active: "aktiv",
+        inactive: "inaktiv",
+        enabled: "Hilfe wurde angefordert.",
+        disabled: "Die Hilfeanforderung wurde zurückgenommen."
+    },
+    partner: {
+        active: "aktiv",
+        inactive: "inaktiv",
+        enabled: "Die Partnersuche wurde aktiviert.",
+        disabled: "Die Partnersuche wurde beendet."
+    },
+    betreuung: {
+        active: "aktiv",
+        inactive: "inaktiv",
+        enabled: "Experimentbetreuung wurde angefordert.",
+        disabled:
+            "Die Anforderung für Experimentbetreuung " +
+            "wurde zurückgenommen."
+    },
+    gelingensnachweis: {
+        active: "aktiv",
+        inactive: "inaktiv",
+        enabled:
+            "Die Bereitschaft für den Gelingensnachweis " +
+            "wurde gemeldet.",
+        disabled:
+            "Die Bereitschaft für den Gelingensnachweis " +
+            "wurde zurückgenommen."
+    }
+};
+
+function isSubjectRequestActive(subject, type) {
+    return safeArray(subject?.requests).includes(type);
+}
+
+async function getArcanumCurrentStudent() {
+    if (!arcanumCurrentStudentPromise) {
+        arcanumCurrentStudentPromise = fetch("/mydata", {
+            credentials: "same-origin"
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(
+                        `Schülerdaten konnten nicht geladen werden ` +
+                        `(${response.status}).`
+                    );
+                }
+
+                return response.json();
+            })
+            .catch(error => {
+                arcanumCurrentStudentPromise = null;
+                throw error;
+            });
+    }
+
+    return arcanumCurrentStudentPromise;
+}
+
+async function toggleSubjectRequest(subject, button, card) {
+    const type = button.dataset.subjectRequest;
+    const texts = ARCANUM_REQUEST_TEXTS[type];
+
+    if (!type || !texts || button.disabled) {
+        return;
+    }
+
+    const wasActive = isSubjectRequestActive(subject, type);
+    const message = card.querySelector(
+        "[data-request-message]"
+    );
+
+    button.disabled = true;
+    button.classList.add("is-loading");
+
+    if (message) {
+        message.textContent = "Wird gespeichert …";
+        message.classList.remove(
+            "is-success",
+            "is-error"
+        );
+    }
+
+    try {
+        const student = await getArcanumCurrentStudent();
+
+        const body = {
+            subjectId: Number(subject.id),
+            subjectRequest: type,
+            studentId: Number(student.id)
+        };
+
+        if (wasActive) {
+            body.remove = true;
+        }
+
+        const response = await fetch("/subject-request", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Die Meldung konnte nicht gespeichert werden ` +
+                `(${response.status}).`
+            );
+        }
+
+        const requests = safeArray(subject.requests);
+
+        if (wasActive) {
+            subject.requests = requests.filter(
+                request => request !== type
+            );
+        } else {
+            subject.requests = [
+                ...new Set([...requests, type])
+            ];
+        }
+
+        const isActive = !wasActive;
+
+        updateSubjectRequestButton(
+            button,
+            type,
+            isActive
+        );
+
+        if (message) {
+            message.textContent = isActive
+                ? texts.enabled
+                : texts.disabled;
+
+            message.classList.add("is-success");
+        }
+    } catch (error) {
+        console.error(
+            "Arcanum: Fachmeldung konnte nicht geändert werden.",
+            error
+        );
+
+        if (message) {
+            message.textContent =
+                "Die Meldung konnte nicht gespeichert werden. " +
+                "Bitte versuche es erneut.";
+
+            message.classList.add("is-error");
+        }
+    } finally {
+        button.disabled = false;
+        button.classList.remove("is-loading");
+    }
+}
+
+function updateSubjectRequestButton(button, type, isActive) {
+    const texts = ARCANUM_REQUEST_TEXTS[type];
+    const status = button.querySelector(
+        "[data-request-status]"
+    );
+
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute(
+        "aria-pressed",
+        String(isActive)
+    );
+
+    if (status && texts) {
+        status.textContent = isActive
+            ? texts.active
+            : texts.inactive;
+    }
 }
 
 function createRequestStatus(requests) {
