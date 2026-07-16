@@ -1703,3 +1703,724 @@ select {
     }
 }
 
+/* arcanum-profile-enhancements-v1 */
+
+.arcanum-profile__email {
+    display: flex;
+    min-width: 0;
+    gap: 0.4rem;
+    align-items: baseline;
+}
+
+.arcanum-profile__email > span {
+    color: rgba(24, 35, 30, 0.72);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.arcanum-profile__email > strong {
+    display: block;
+    max-width: min(24rem, 38vw);
+    overflow: hidden;
+    color: #18231e;
+    font-size: 0.82rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+
+
+
+
+
+@media (max-width: 760px) {
+    .arcanum-profile__email {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .arcanum-profile__email > strong {
+        max-width: 70vw;
+    }
+
+    .arcanum-logout-button {
+        margin-top: 0.45rem;
+        margin-left: 0;
+    }
+}
+
+/* arcanum-readable-header-v2 */
+
+/* ==========================================================
+   KOMPAKTER KOPFBEREICH
+   ========================================================== */
+
+.arcanum-hero {
+    min-height: 14.2rem;
+    padding: 0.8rem 0 0.9rem;
+}
+
+.arcanum-profile {
+    min-height: 12.5rem;
+    padding-right: 14rem;
+}
+
+/* ==========================================================
+   HALBTRANSPARENTER PROFILRAHMEN
+   ========================================================== */
+
+.arcanum-profile__identity {
+    width: min(46rem, 100%);
+    padding: 1rem 1.15rem;
+    border: 1px solid rgba(232, 213, 159, 0.3);
+    border-radius: 1.05rem;
+    color: #f6f2df;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(24, 39, 34, 0.82),
+            rgba(48, 62, 46, 0.68)
+        );
+    box-shadow:
+        0 0.65rem 1.5rem rgba(0, 0, 0, 0.22),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+    backdrop-filter:
+        blur(8px)
+        saturate(1.08);
+}
+
+.arcanum-profile__identity .arcanum-eyebrow {
+    margin: 0;
+    color: #e7cb77;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.09em;
+}
+
+.arcanum-profile__identity h1 {
+    max-width: none;
+    margin: 0.18rem 0 0.65rem;
+    color: #fff9e7;
+    font-size: clamp(2rem, 3.2vw, 3.15rem);
+    line-height: 1;
+    text-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.24);
+}
+
+.arcanum-profile__details {
+    display: flex;
+    gap: 0.55rem 1.2rem;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    color: #f1ecd9;
+    font-size: 0.9rem;
+    line-height: 1.35;
+}
+
+.arcanum-profile__details > div,
+.arcanum-profile__details > span {
+    color: #f1ecd9;
+}
+
+.arcanum-profile__details strong {
+    color: #fff9e7;
+    font-size: 0.92rem;
+}
+
+.arcanum-profile__email {
+    gap: 0.42rem;
+}
+
+.arcanum-profile__email > span {
+    color: rgba(241, 236, 217, 0.78);
+    font-size: 0.82rem;
+}
+
+.arcanum-profile__email > strong {
+    max-width: min(26rem, 40vw);
+    color: #fff9e7;
+    font-size: 0.88rem;
+}
+
+/* ==========================================================
+   MÜNZEN UND NOTEN – HOCHKANT UND KOMPAKT
+   ========================================================== */
+
+.arcanum-floating-grades {
+    position: absolute !important;
+    top: 0.75rem !important;
+    right: max(
+        0.75rem,
+        calc((100vw - 1600px) / 2 + 0.75rem)
+    ) !important;
+    bottom: auto !important;
+    left: auto !important;
+    z-index: 6;
+    display: block;
+    width: 12.7rem;
+    margin: 0;
+    padding: 0.65rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 216, 94, 0.4);
+    border-radius: 1rem;
+    background:
+        radial-gradient(
+            circle at 92% 4%,
+            rgba(255, 213, 72, 0.17),
+            transparent 34%
+        ),
+        linear-gradient(
+            155deg,
+            rgba(29, 44, 57, 0.98),
+            rgba(13, 23, 32, 0.98)
+        );
+    box-shadow:
+        0 0.7rem 1.7rem rgba(0, 0, 0, 0.33),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+}
+
+.arcanum-grade-intro {
+    padding: 0.05rem 0.15rem 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.arcanum-grade-intro h2 {
+    margin: 0;
+    color: #fff2b4;
+    font-size: 1rem;
+    font-weight: 900;
+    line-height: 1.15;
+}
+
+.arcanum-grade-scale--floating {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.34rem;
+    margin: 0.5rem 0 0;
+}
+
+.arcanum-grade-pill {
+    --grade-color: #8191a2;
+    position: relative;
+    display: grid;
+    min-height: 1.72rem;
+    grid-template-columns: 4rem minmax(0, 1fr);
+    gap: 0.4rem;
+    align-items: center;
+    padding: 0.35rem 0.45rem 0.35rem 0.68rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    border-radius: 0.65rem;
+    background:
+        linear-gradient(
+            90deg,
+            color-mix(
+                in srgb,
+                var(--grade-color) 22%,
+                transparent
+            ),
+            rgba(255, 255, 255, 0.025)
+        );
+}
+
+.arcanum-grade-pill::before {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0.25rem;
+    background: var(--grade-color);
+    box-shadow: 0 0 0.45rem var(--grade-color);
+    content: "";
+}
+
+/* Reihenfolge im HTML: Note 1 bis Note 5. */
+
+.arcanum-grade-pill:nth-child(1) {
+    --grade-color: #51cfb0;
+}
+
+.arcanum-grade-pill:nth-child(2) {
+    --grade-color: #74c77a;
+}
+
+.arcanum-grade-pill:nth-child(3) {
+    --grade-color: #e2c653;
+}
+
+.arcanum-grade-pill:nth-child(4) {
+    --grade-color: #dc9850;
+}
+
+.arcanum-grade-pill:nth-child(5) {
+    --grade-color: #c5765b;
+}
+
+.arcanum-grade-pill__coins {
+    display: inline-flex;
+    gap: 0.3rem;
+    align-items: center;
+    color: #fff0b2;
+    font-size: 0.76rem;
+    font-weight: 950;
+    white-space: nowrap;
+}
+
+.arcanum-grade-pill__coins::before {
+    width: 0.78rem;
+    height: 0.78rem;
+    flex: 0 0 auto;
+    border: 1px solid #ffdb66;
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle at 35% 30%,
+            #fff3ab,
+            #e9b933 43%,
+            #996617 80%
+        );
+    box-shadow: 0 0 0.3rem rgba(255, 204, 56, 0.32);
+    content: "";
+}
+
+.arcanum-grade-pill__label {
+    min-width: 0;
+    overflow: hidden;
+    color: rgba(241, 246, 249, 0.88);
+    font-size: 0.7rem;
+    font-weight: 750;
+    line-height: 1.15;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ==========================================================
+   RESPONSIVES VERHALTEN
+   ========================================================== */
+
+@media (max-width: 1050px) {
+    .arcanum-profile {
+        padding-right: 13.3rem;
+    }
+
+    .arcanum-floating-grades {
+        width: 12.2rem;
+    }
+}
+
+@media (max-width: 760px) {
+    .arcanum-hero {
+        min-height: 0;
+    }
+
+    .arcanum-profile {
+        min-height: 0;
+        padding-right: 0;
+    }
+
+    .arcanum-profile__identity {
+        width: 100%;
+    }
+
+    .arcanum-profile__email > strong {
+        max-width: 70vw;
+    }
+
+    .arcanum-floating-grades {
+        position: relative !important;
+        inset: auto !important;
+        width: calc(100% - 1rem);
+        margin: 0.65rem auto 0;
+    }
+}
+
+/* arcanum-grade-box-v4 */
+
+/*
+ * Kompakter Notenkasten im Kopf.
+ * Die Regeln stehen bewusst am Dateiende und verwenden
+ * die tatsächlich vorhandenen HTML-Klassen.
+ */
+
+.arcanum-floating-grades {
+    position: absolute !important;
+    top: 0.75rem !important;
+    right: max(
+        0.75rem,
+        calc((100vw - 1600px) / 2 + 0.75rem)
+    ) !important;
+    bottom: auto !important;
+    left: auto !important;
+    z-index: 8;
+    display: block !important;
+    box-sizing: border-box;
+    width: 13.4rem !important;
+    max-height: 12.4rem;
+    margin: 0 !important;
+    padding: 0.58rem !important;
+    overflow: hidden;
+    border: 1px solid rgba(255, 216, 94, 0.42);
+    border-radius: 0.95rem;
+    background:
+        radial-gradient(
+            circle at 96% 0,
+            rgba(255, 210, 66, 0.16),
+            transparent 35%
+        ),
+        linear-gradient(
+            155deg,
+            rgba(27, 42, 54, 0.98),
+            rgba(12, 21, 30, 0.98)
+        );
+    box-shadow:
+        0 0.65rem 1.5rem rgba(0, 0, 0, 0.34),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+}
+
+.arcanum-floating-grades__header {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0.05rem 0.1rem 0.42rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.11);
+    text-align: center;
+}
+
+.arcanum-floating-grades__header h2 {
+    margin: 0 !important;
+    color: #fff1ad;
+    font-size: 1.08rem !important;
+    font-weight: 950;
+    line-height: 1.1;
+}
+
+.arcanum-floating-grades__header .arcanum-eyebrow,
+.arcanum-floating-grades__hint {
+    display: none !important;
+}
+
+.arcanum-grade-scale--floating {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.24rem !important;
+    margin: 0.4rem 0 0 !important;
+}
+
+.arcanum-grade-pill {
+    --grade-color: #8191a2;
+    position: relative;
+    display: grid !important;
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 1.48rem !important;
+    grid-template-columns:
+        4.2rem minmax(0, 1fr) !important;
+    gap: 0.35rem !important;
+    align-items: center;
+    padding: 0.25rem 0.4rem 0.25rem 0.63rem !important;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    border-radius: 0.58rem !important;
+    background:
+        linear-gradient(
+            90deg,
+            color-mix(
+                in srgb,
+                var(--grade-color) 23%,
+                transparent
+            ),
+            rgba(255, 255, 255, 0.025)
+        );
+}
+
+.arcanum-grade-pill::before {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0.23rem;
+    background: var(--grade-color);
+    box-shadow: 0 0 0.42rem var(--grade-color);
+    content: "";
+}
+
+/* HTML-Reihenfolge: Note 1 bis Note 5. */
+
+.arcanum-grade-pill:nth-child(1) {
+    --grade-color: #4fd0af;
+}
+
+.arcanum-grade-pill:nth-child(2) {
+    --grade-color: #71c978;
+}
+
+.arcanum-grade-pill:nth-child(3) {
+    --grade-color: #e2c653;
+}
+
+.arcanum-grade-pill:nth-child(4) {
+    --grade-color: #db984e;
+}
+
+.arcanum-grade-pill:nth-child(5) {
+    --grade-color: #c4775b;
+}
+
+.arcanum-grade-pill__coins {
+    display: inline-flex !important;
+    min-width: 0;
+    gap: 0.3rem;
+    align-items: center;
+    color: #fff0ad !important;
+    font-size: 0.78rem !important;
+    font-weight: 950;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.arcanum-grade-pill__coins::before {
+    width: 0.77rem;
+    height: 0.77rem;
+    flex: 0 0 auto;
+    border: 1px solid #ffdb66;
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle at 35% 30%,
+            #fff3ab,
+            #e9b933 43%,
+            #996617 80%
+        );
+    box-shadow:
+        0 0 0.3rem rgba(255, 204, 56, 0.32);
+    content: "";
+}
+
+.arcanum-grade-pill__label {
+    min-width: 0;
+    overflow: visible !important;
+    color: rgba(243, 247, 249, 0.94) !important;
+    font-size: 0.73rem !important;
+    font-weight: 800;
+    line-height: 1.05 !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+}
+
+.arcanum-logout-button {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+.arcanum-logout-button:hover,
+.arcanum-logout-button:focus,
+.arcanum-logout-button:visited {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+@media (max-width: 1050px) {
+    .arcanum-floating-grades {
+        width: 12.8rem !important;
+    }
+
+    .arcanum-grade-pill {
+        grid-template-columns:
+            4rem minmax(0, 1fr) !important;
+    }
+
+    .arcanum-grade-pill__label {
+        font-size: 0.69rem !important;
+    }
+}
+
+@media (max-width: 760px) {
+    .arcanum-floating-grades {
+        position: relative !important;
+        inset: auto !important;
+        width: calc(100% - 1rem) !important;
+        max-height: none;
+        margin: 0.65rem auto 0 !important;
+    }
+
+    .arcanum-grade-pill__label {
+        font-size: 0.74rem !important;
+    }
+}
+
+/* arcanum-header-layout-v5 */
+
+/* ==========================================================
+   PROFILRAHMEN MIT MÜNZEN UND RANG
+   ========================================================== */
+
+.arcanum-profile {
+    box-sizing: border-box;
+    padding-right: 18.4rem !important;
+}
+
+.arcanum-profile__identity {
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto !important;
+    gap: 1.15rem;
+    align-items: stretch;
+}
+
+.arcanum-profile__identity-main {
+    min-width: 0;
+    align-self: center;
+}
+
+.arcanum-profile__metrics {
+    display: grid;
+    min-width: 9.4rem;
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+    align-content: center;
+    padding-left: 1rem;
+    border-left: 1px solid rgba(235, 218, 166, 0.25);
+}
+
+.arcanum-profile__metric-card {
+    position: relative !important;
+    inset: auto !important;
+    box-sizing: border-box;
+    width: 100% !important;
+    min-width: 9.4rem;
+    max-width: none !important;
+    min-height: 3.15rem;
+    margin: 0 !important;
+    padding: 0.55rem 0.75rem !important;
+    border: 1px solid rgba(241, 222, 158, 0.24) !important;
+    border-radius: 0.72rem !important;
+    color: #fff8dc !important;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(13, 25, 29, 0.78),
+            rgba(26, 39, 35, 0.68)
+        ) !important;
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+
+.arcanum-profile__metric-label {
+    display: block;
+    margin: 0 0 0.16rem !important;
+    color: rgba(240, 232, 201, 0.75) !important;
+    font-size: 0.68rem !important;
+    font-weight: 900 !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.arcanum-profile__metric-value {
+    display: block;
+    color: #ffe18a !important;
+    font-size: 1.25rem !important;
+    font-weight: 950 !important;
+    line-height: 1.05 !important;
+    white-space: nowrap;
+}
+
+.arcanum-profile__metric-card--rank
+.arcanum-profile__metric-value {
+    font-size: 0.95rem !important;
+}
+
+/* ==========================================================
+   BREITERER NOTENKASTEN
+   ========================================================== */
+
+.arcanum-floating-grades {
+    width: 17.2rem !important;
+    max-height: 12.5rem;
+}
+
+.arcanum-grade-pill {
+    grid-template-columns:
+        4.6rem minmax(0, 1fr) !important;
+    gap: 0.48rem !important;
+    padding-right: 0.65rem !important;
+}
+
+.arcanum-grade-pill__coins {
+    font-size: 0.8rem !important;
+}
+
+.arcanum-grade-pill__label {
+    overflow: visible !important;
+    font-size: 0.78rem !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+}
+
+/* ==========================================================
+   RESPONSIVES VERHALTEN
+   ========================================================== */
+
+@media (max-width: 1250px) {
+    .arcanum-profile {
+        padding-right: 17rem !important;
+    }
+
+    .arcanum-floating-grades {
+        width: 15.8rem !important;
+    }
+
+    .arcanum-profile__metrics {
+        min-width: 8.6rem;
+    }
+
+    .arcanum-profile__metric-card {
+        min-width: 8.6rem;
+    }
+
+    .arcanum-grade-pill__label {
+        font-size: 0.73rem !important;
+    }
+}
+
+@media (max-width: 950px) {
+    .arcanum-profile {
+        padding-right: 0 !important;
+    }
+
+    .arcanum-profile__identity {
+        grid-template-columns: 1fr !important;
+    }
+
+    .arcanum-profile__metrics {
+        min-width: 0;
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+        padding-top: 0.75rem;
+        padding-left: 0;
+        border-top: 1px solid rgba(235, 218, 166, 0.25);
+        border-left: 0;
+    }
+
+    .arcanum-profile__metric-card {
+        min-width: 0;
+    }
+
+    .arcanum-floating-grades {
+        position: relative !important;
+        inset: auto !important;
+        width: calc(100% - 1rem) !important;
+        max-height: none;
+        margin: 0.7rem auto 0 !important;
+    }
+
+    .arcanum-grade-pill__label {
+        font-size: 0.78rem !important;
+    }
+}
+
+@media (max-width: 560px) {
+    .arcanum-profile__metrics {
+        grid-template-columns: 1fr;
+    }
+}

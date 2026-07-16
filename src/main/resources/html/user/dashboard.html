@@ -40,7 +40,12 @@
                             Graduierung
                             <strong id="student-graduation">Starter</strong>
                         </span>
+
+                    <div class="arcanum-profile__email">
+                        <span>E-Mail</span>
+                        <strong id="student-email">wird geladen</strong>
                     </div>
+</div>
 
                     <button
                         type="button"
@@ -51,6 +56,12 @@
                     >
                         Avatar bearbeiten
                     </button>
+                    <a
+                        class="arcanum-button arcanum-button--secondary arcanum-logout-button"
+                        href="/logout"
+                    >
+                        Abmelden
+                    </a>
                 </div>
 
                 <div class="arcanum-profile__score">
@@ -92,40 +103,30 @@
             class="arcanum-floating-grades"
             aria-labelledby="grade-title"
         >
-            <div class="arcanum-grade-intro">
-<div class="arcanum-floating-grades__header">
-                <p class="arcanum-eyebrow">Orientierung</p>
+            <div class="arcanum-floating-grades__header">
                 <h2 id="grade-title">Münzen &amp; Noten</h2>
-                <p class="arcanum-floating-grades__hint">
-                    Die Note ergibt sich direkt aus der Anzahl deiner Münzen.
-                </p>
-            </div>
             </div>
 
             <div class="arcanum-grade-scale arcanum-grade-scale--floating">
                 <div class="arcanum-grade-pill">
-                    <span class="arcanum-grade-pill__coins">ab 20</span>
-                    <span class="arcanum-grade-pill__label">Note 5 · mangelhaft</span>
+                    <span class="arcanum-grade-pill__coins">ab 90</span>
+                    <span class="arcanum-grade-pill__label">Note 1 · sehr gut</span>
                 </div>
-
-                <div class="arcanum-grade-pill">
-                    <span class="arcanum-grade-pill__coins">ab 40</span>
-                    <span class="arcanum-grade-pill__label">Note 4 · ausreichend</span>
-                </div>
-
-                <div class="arcanum-grade-pill">
-                    <span class="arcanum-grade-pill__coins">ab 60</span>
-                    <span class="arcanum-grade-pill__label">Note 3 · befriedigend</span>
-                </div>
-
                 <div class="arcanum-grade-pill">
                     <span class="arcanum-grade-pill__coins">ab 75</span>
                     <span class="arcanum-grade-pill__label">Note 2 · gut</span>
                 </div>
-
                 <div class="arcanum-grade-pill">
-                    <span class="arcanum-grade-pill__coins">ab 90</span>
-                    <span class="arcanum-grade-pill__label">Note 1 · sehr gut</span>
+                    <span class="arcanum-grade-pill__coins">ab 60</span>
+                    <span class="arcanum-grade-pill__label">Note 3 · befriedigend</span>
+                </div>
+                <div class="arcanum-grade-pill">
+                    <span class="arcanum-grade-pill__coins">ab 40</span>
+                    <span class="arcanum-grade-pill__label">Note 4 · ausreichend</span>
+                </div>
+                <div class="arcanum-grade-pill">
+                    <span class="arcanum-grade-pill__coins">ab 20</span>
+                    <span class="arcanum-grade-pill__label">Note 5 · mangelhaft</span>
                 </div>
             </div>
         </aside>
@@ -134,16 +135,7 @@
 
 
         <main class="arcanum-main">
-            <section class="arcanum-intro">
-                <div>
-                    <p class="arcanum-eyebrow">Dein Lernweg</p>
-                    <h2>Deine Fächer</h2>
-                </div>
 
-                <p class="arcanum-intro__text" id="dashboard-summary">
-                    Deine Lerndaten werden geladen.
-                </p>
-            </section>
 
             <section
                 class="arcanum-subject-grid"

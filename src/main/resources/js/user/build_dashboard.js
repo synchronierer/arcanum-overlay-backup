@@ -1920,3 +1920,613 @@ function renderFatalError(message) {
 
     setText("dashboard-summary", "Lerndaten konnten nicht geladen werden.");
 }
+
+/* arcanum-profile-enhancements-v1 */
+
+function getArcanumGraduationValue(student) {
+    return (
+        student?.graduationLevel ??
+        student?.graduation_level ??
+        student?.graduation ??
+        student?.level ??
+        null
+    );
+}
+
+function formatArcanumGraduation(value) {
+    if (
+        value &&
+        typeof value === "object"
+    ) {
+        value = (
+            value.name ??
+            value.label ??
+            value.value ??
+            value.id
+        );
+    }
+
+    const numericValue = Number(value);
+
+    if (Number.isFinite(numericValue)) {
+        const numericLabels = {
+            0: "Neustarter",
+            1: "Starter",
+            2: "Durchstarter",
+            3: "Lernprofi"
+        };
+
+        if (
+            Object.prototype.hasOwnProperty.call(
+                numericLabels,
+                numericValue
+            )
+        ) {
+            return numericLabels[numericValue];
+        }
+    }
+
+    const normalised = textValue(value)
+        .trim()
+        .toLocaleLowerCase("de")
+        .replace(/[\s_-]+/g, "");
+
+    const textLabels = {
+        neustarter: "Neustarter",
+        starter: "Starter",
+        durchstarter: "Durchstarter",
+        lernprofi: "Lernprofi"
+    };
+
+    return (
+        textLabels[normalised] ??
+        textValue(value).trim() ??
+        "noch offen"
+    );
+}
+
+function findGraduationElement() {
+    const directElement = (
+        document.getElementById("student-graduation") ??
+        document.querySelector(
+            "[data-student-graduation]"
+        )
+    );
+
+    if (directElement) {
+        return directElement;
+    }
+
+    const details = document.querySelector(
+        ".arcanum-profile__details"
+    );
+
+    if (!details) {
+        return null;
+    }
+
+    const candidates = [
+        ...details.querySelectorAll(
+            "div, span, p"
+        )
+    ];
+
+    const graduationContainer = candidates.find(
+        element => (
+            element.textContent
+                .toLocaleLowerCase("de")
+                .includes("graduierung")
+        )
+    );
+
+    if (!graduationContainer) {
+        return null;
+    }
+
+    return (
+        graduationContainer.querySelector("strong") ??
+        graduationContainer.lastElementChild ??
+        graduationContainer
+    );
+}
+
+async function populateArcanumProfileDetails() {
+    try {
+        const student = await getArcanumCurrentStudent();
+
+        const emailElement = document.getElementById(
+            "student-email"
+        );
+
+        if (emailElement) {
+            emailElement.textContent = (
+                textValue(student?.email).trim() ||
+                "nicht hinterlegt"
+            );
+        }
+
+        const graduationElement =
+            findGraduationElement();
+
+        if (graduationElement) {
+            graduationElement.textContent =
+                formatArcanumGraduation(
+                    getArcanumGraduationValue(student)
+                );
+
+            graduationElement.setAttribute(
+                "data-student-graduation",
+                ""
+            );
+        }
+
+        return student;
+    } catch (error) {
+        console.error(
+            "Arcanum: Profilangaben konnten nicht ergänzt werden.",
+            error
+        );
+
+        const emailElement = document.getElementById(
+            "student-email"
+        );
+
+        if (emailElement) {
+            emailElement.textContent =
+                "nicht verfügbar";
+        }
+
+        return null;
+    }
+}
+
+let arcanumDashboardLoadEventSent = false;
+
+function dispatchArcanumStudentDashboardLoad(student) {
+    if (arcanumDashboardLoadEventSent) {
+        return;
+    }
+
+    arcanumDashboardLoadEventSent = true;
+
+    document.documentElement.dataset
+        .studentDashboardLoaded = "true";
+
+    const eventDetail = {
+        source: "arcanum-overlay",
+        student
+    };
+
+    if (
+        window.jQuery &&
+        typeof window.jQuery === "function"
+    ) {
+        window.jQuery(document).trigger(
+            "student-dashboard-load",
+            [eventDetail]
+        );
+    } else {
+        document.dispatchEvent(
+            new CustomEvent(
+                "student-dashboard-load",
+                {
+                    detail: eventDetail
+                }
+            )
+        );
+    }
+}
+
+function installArcanumStudentDashboardLoadHook() {
+    const initialise = () => {
+        const subjectGrid = document.querySelector(
+            ".arcanum-subject-grid"
+        );
+
+        if (!subjectGrid) {
+            window.setTimeout(
+                installArcanumStudentDashboardLoadHook,
+                50
+            );
+
+            return;
+        }
+
+        const dashboardIsReady = () => (
+            subjectGrid.querySelector(
+                ".arcanum-subject-card, " +
+                ".arcanum-empty-state"
+            ) !== null
+        );
+
+        const finishInitialisation = async () => {
+            const student =
+                await populateArcanumProfileDetails();
+
+            dispatchArcanumStudentDashboardLoad(
+                student
+            );
+        };
+
+        if (dashboardIsReady()) {
+            finishInitialisation();
+            return;
+        }
+
+        const observer = new MutationObserver(() => {
+            if (!dashboardIsReady()) {
+                return;
+            }
+
+            observer.disconnect();
+            finishInitialisation();
+        });
+
+        observer.observe(
+            subjectGrid,
+            {
+                childList: true,
+                subtree: true
+            }
+        );
+    };
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            initialise,
+            { once: true }
+        );
+    } else {
+        initialise();
+    }
+}
+
+installArcanumStudentDashboardLoadHook();
+
+/* arcanum-profile-metrics-layout-v1 */
+
+(() => {
+    function normaliseMetricText(value) {
+        return String(value ?? "")
+            .replace(/\s+/g, " ")
+            .trim()
+            .toLocaleLowerCase("de");
+    }
+
+    function elementDepth(element, root) {
+        let depth = 0;
+        let current = element;
+
+        while (
+            current &&
+            current !== root
+        ) {
+            depth += 1;
+            current = current.parentElement;
+        }
+
+        return depth;
+    }
+
+    function findMetricLabel(
+        root,
+        wantedLabel,
+        excludedLabel
+    ) {
+        const candidates = [
+            ...root.querySelectorAll("*")
+        ].filter(element => {
+            const text = normaliseMetricText(
+                element.textContent
+            );
+
+            return (
+                text.includes(wantedLabel) &&
+                !text.includes(excludedLabel)
+            );
+        });
+
+        candidates.sort(
+            (first, second) => (
+                elementDepth(second, root) -
+                elementDepth(first, root)
+            )
+        );
+
+        return candidates[0] ?? null;
+    }
+
+    function findMetricCard(
+        labelElement,
+        root,
+        excludedLabel
+    ) {
+        let current = labelElement;
+
+        while (
+            current &&
+            current !== root
+        ) {
+            const text = normaliseMetricText(
+                current.textContent
+            );
+
+            if (
+                text.includes(excludedLabel)
+            ) {
+                break;
+            }
+
+            const hasValue = (
+                /\d/.test(text) ||
+                text.includes("offen")
+            );
+
+            if (
+                hasValue &&
+                text.length <= 80
+            ) {
+                return current;
+            }
+
+            current = current.parentElement;
+        }
+
+        return labelElement.parentElement;
+    }
+
+    function markMetricValue(
+        card,
+        labelText
+    ) {
+        const candidates = [
+            ...card.querySelectorAll("*")
+        ].filter(element => {
+            const text = normaliseMetricText(
+                element.textContent
+            );
+
+            return (
+                text &&
+                !text.includes(labelText) &&
+                (
+                    /\d/.test(text) ||
+                    text.includes("offen")
+                )
+            );
+        });
+
+        candidates.sort(
+            (first, second) => (
+                elementDepth(second, card) -
+                elementDepth(first, card)
+            )
+        );
+
+        const valueElement = candidates[0];
+
+        if (valueElement) {
+            valueElement.classList.add(
+                "arcanum-profile__metric-value"
+            );
+        }
+    }
+
+    function hideEmptySourceContainer(
+        container,
+        profile,
+        identity
+    ) {
+        if (
+            !container ||
+            container === profile ||
+            container === identity
+        ) {
+            return;
+        }
+
+        const visibleChildren = [
+            ...container.children
+        ].filter(child => !child.hidden);
+
+        const remainingText = normaliseMetricText(
+            container.textContent
+        );
+
+        if (
+            visibleChildren.length === 0 &&
+            remainingText === ""
+        ) {
+            container.hidden = true;
+            container.classList.add(
+                "arcanum-profile__metrics-source-empty"
+            );
+        }
+    }
+
+    function arrangeProfileMetrics() {
+        const profile = document.querySelector(
+            ".arcanum-profile"
+        );
+
+        const identity = document.querySelector(
+            ".arcanum-profile__identity"
+        );
+
+        if (
+            !profile ||
+            !identity
+        ) {
+            return false;
+        }
+
+        if (
+            identity.dataset.metricsLayout === "true"
+        ) {
+            return true;
+        }
+
+        const totalLabel = findMetricLabel(
+            profile,
+            "gesamtmünzen",
+            "platz"
+        );
+
+        const rankLabel = findMetricLabel(
+            profile,
+            "platz",
+            "gesamtmünzen"
+        );
+
+        if (
+            !totalLabel ||
+            !rankLabel
+        ) {
+            return false;
+        }
+
+        const totalCard = findMetricCard(
+            totalLabel,
+            profile,
+            "platz"
+        );
+
+        const rankCard = findMetricCard(
+            rankLabel,
+            profile,
+            "gesamtmünzen"
+        );
+
+        if (
+            !totalCard ||
+            !rankCard ||
+            totalCard === rankCard
+        ) {
+            console.warn(
+                "Arcanum: Gesamtmünzen und Platz konnten " +
+                "nicht eindeutig getrennt werden."
+            );
+
+            return false;
+        }
+
+        const originalParents = new Set([
+            totalCard.parentElement,
+            rankCard.parentElement
+        ]);
+
+        let identityMain = identity.querySelector(
+            ":scope > .arcanum-profile__identity-main"
+        );
+
+        if (!identityMain) {
+            identityMain = document.createElement("div");
+            identityMain.className =
+                "arcanum-profile__identity-main";
+
+            const existingNodes = [
+                ...identity.childNodes
+            ];
+
+            for (const node of existingNodes) {
+                identityMain.appendChild(node);
+            }
+
+            identity.appendChild(identityMain);
+        }
+
+        let metrics = identity.querySelector(
+            ":scope > .arcanum-profile__metrics"
+        );
+
+        if (!metrics) {
+            metrics = document.createElement("div");
+            metrics.className =
+                "arcanum-profile__metrics";
+
+            metrics.setAttribute(
+                "aria-label",
+                "Münzen und Rang"
+            );
+
+            identity.appendChild(metrics);
+        }
+
+        totalCard.classList.add(
+            "arcanum-profile__metric-card",
+            "arcanum-profile__metric-card--coins"
+        );
+
+        rankCard.classList.add(
+            "arcanum-profile__metric-card",
+            "arcanum-profile__metric-card--rank"
+        );
+
+        totalLabel.classList.add(
+            "arcanum-profile__metric-label"
+        );
+
+        rankLabel.classList.add(
+            "arcanum-profile__metric-label"
+        );
+
+        markMetricValue(
+            totalCard,
+            "gesamtmünzen"
+        );
+
+        markMetricValue(
+            rankCard,
+            "platz"
+        );
+
+        metrics.appendChild(totalCard);
+        metrics.appendChild(rankCard);
+
+        for (const parent of originalParents) {
+            hideEmptySourceContainer(
+                parent,
+                profile,
+                identity
+            );
+        }
+
+        identity.dataset.metricsLayout = "true";
+
+        return true;
+    }
+
+    function installProfileMetricsLayout() {
+        let attempts = 0;
+        const maximumAttempts = 60;
+
+        const tryArrangement = () => {
+            attempts += 1;
+
+            if (
+                arrangeProfileMetrics() ||
+                attempts >= maximumAttempts
+            ) {
+                window.clearInterval(timer);
+            }
+        };
+
+        const timer = window.setInterval(
+            tryArrangement,
+            100
+        );
+
+        tryArrangement();
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            installProfileMetricsLayout,
+            { once: true }
+        );
+    } else {
+        installProfileMetricsLayout();
+    }
+})();
