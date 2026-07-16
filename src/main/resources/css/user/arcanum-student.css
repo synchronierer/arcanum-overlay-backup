@@ -1611,3 +1611,95 @@ select {
     }
 }
 
+/* arcanum-task-controls-v1 */
+
+.arcanum-subject-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.arcanum-subject-stat-button--open {
+    border-color: rgba(105, 166, 203, 0.22);
+}
+
+.arcanum-task-row__side {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.arcanum-task-action-button {
+    min-width: 8.8rem;
+    min-height: 2.4rem;
+    padding: 0.5rem 0.78rem;
+    border: 1px solid transparent;
+    border-radius: 0.72rem;
+    color: var(--arcanum-text);
+    cursor: pointer;
+    font-size: 0.69rem;
+    font-weight: 850;
+    line-height: 1.15;
+    white-space: nowrap;
+    transition:
+        border-color 130ms ease,
+        background-color 130ms ease,
+        opacity 130ms ease;
+}
+
+.arcanum-task-action-button--begin {
+    border-color: rgba(140, 191, 131, 0.38);
+    background: rgba(67, 112, 65, 0.32);
+}
+
+.arcanum-task-action-button--begin:hover:not(:disabled) {
+    border-color: rgba(169, 219, 157, 0.7);
+    background: rgba(72, 128, 69, 0.45);
+}
+
+.arcanum-task-action-button--cancel {
+    border-color: rgba(218, 159, 107, 0.38);
+    background: rgba(111, 72, 42, 0.32);
+}
+
+.arcanum-task-action-button--cancel:hover:not(:disabled) {
+    border-color: rgba(238, 178, 119, 0.68);
+    background: rgba(130, 79, 43, 0.45);
+}
+
+.arcanum-task-action-button:focus-visible {
+    outline: 0.18rem solid var(--arcanum-gold);
+    outline-offset: 0.13rem;
+}
+
+.arcanum-task-action-button:disabled {
+    cursor: wait;
+    opacity: 0.72;
+}
+
+.arcanum-task-action-button.is-success {
+    border-color: rgba(164, 218, 150, 0.76);
+    background: rgba(61, 121, 64, 0.52);
+}
+
+.arcanum-task-action-button.is-error {
+    border-color: rgba(255, 180, 169, 0.76);
+    background: rgba(125, 50, 47, 0.52);
+}
+
+@media (max-width: 800px) {
+    .arcanum-subject-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .arcanum-task-row__side {
+        width: 100%;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .arcanum-task-action-button {
+        width: 100%;
+    }
+}
+

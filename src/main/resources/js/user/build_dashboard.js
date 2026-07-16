@@ -393,6 +393,25 @@ function createSubjectCard(subject) {
         >
             <button
                 type="button"
+                class="arcanum-subject-stat-button
+                       arcanum-subject-stat-button--open"
+                data-detail-status="open"
+            >
+                <span class="arcanum-subject-stat-button__label">
+                    Offen
+                </span>
+
+                <strong class="arcanum-subject-stat-button__value">
+                    Etappen
+                </strong>
+
+                <span class="arcanum-subject-stat-button__action">
+                    Anzeigen und beginnen
+                </span>
+            </button>
+
+            <button
+                type="button"
                 class="arcanum-subject-stat-button"
                 data-detail-status="current"
             >
@@ -440,19 +459,11 @@ function createSubjectCard(subject) {
                     Anzeigen
                 </span>
             </button>
-        </div>
 
-        <div class="arcanum-subject-actions">
-            ${createRequestStatus(subject.requests)}
-            <button
-                type="button"
-                class="arcanum-button arcanum-button--card"
-                disabled
-                title="Die Fachdetailansicht folgt in einem späteren Schritt."
-            >
-                Fach öffnen
-            </button>
-        </div>
+
+</div>
+
+
     `;
 
     card.querySelectorAll("[data-detail-status]").forEach(
@@ -510,6 +521,11 @@ const ARCANUM_TASK_DETAIL_CONFIG = {
 };
 
 function openTaskDetails(subject, status) {
+    if (status === "open") {
+        openAvailableTaskDetails(subject);
+        return;
+    }
+
     const config = ARCANUM_TASK_DETAIL_CONFIG[status];
 
     if (!config) {
@@ -623,7 +639,360 @@ function ensureTaskDetailsDialog() {
         }
     });
 
+    const taskDialogContent = dialog.querySelector(
+        "[data-task-dialog-content]"
+    );
+
+    if (
+        taskDialogContent &&
+        taskDialogContent.dataset.taskActionsBound !== "true"
+    ) {
+        taskDialogContent.addEventListener(
+            "click",
+            handleTaskActionClick
+        );
+
+        taskDialogContent.dataset.taskActionsBound = "true";
+    }
+
     return dialog;
+}
+
+
+async function fetchOpenTasksForSubject(subject) {
+    const student = await getArcanumCurrentStudent();
+
+    const studentId = extractEntityId(student?.id);
+    const subjectId = extractEntityId(subject?.id);
+
+    if (studentId === null || subjectId === null) {
+        throw new Error(
+            "Schüler- oder Fachdaten fehlen."
+        );
+    }
+
+    const topicResponse = await fetch("/current-topic", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            subjectId
+        })
+    });
+
+    if (!topicResponse.ok) {
+        throw new Error(
+            `Das aktuelle Thema konnte nicht geladen werden ` +
+            `(${topicResponse.status}).`
+        );
+    }
+
+    const topic = await topicResponse.json();
+
+    if (!topic) {
+        return {
+            topic: null,
+            tasks: []
+        };
+    }
+
+    const taskIds = [
+        ...new Set(
+            safeArray(topic.tasks)
+                .map(task => extractEntityId(task))
+                .filter(taskId => taskId !== null)
+        )
+    ];
+
+    if (taskIds.length === 0) {
+        return {
+            topic,
+            tasks: []
+        };
+    }
+
+    const tasksResponse = await fetch("/tasks", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            ids: taskIds,
+            studentId
+        })
+    });
+
+    if (!tasksResponse.ok) {
+        throw new Error(
+            `Die Etappen konnten nicht geladen werden ` +
+            `(${tasksResponse.status}).`
+        );
+    }
+
+    const payload = await tasksResponse.json();
+
+    const allTasks = Array.isArray(payload)
+        ? payload
+        : safeArray(
+            payload?.tasks ??
+            payload?.results
+        );
+
+    const unavailableIds = new Set();
+
+    [
+        ...safeArray(subject.selectedTasks),
+        ...safeArray(subject.completedTasks),
+        ...safeArray(subject.lockedTasks)
+    ].forEach(task => {
+        const taskId = extractEntityId(task?.id ?? task);
+
+        if (taskId !== null) {
+            unavailableIds.add(taskId);
+        }
+    });
+
+    const tasks = allTasks
+        .filter(task => {
+            const taskId = extractEntityId(
+                task?.id ?? task
+            );
+
+            return (
+                taskId !== null &&
+                !unavailableIds.has(taskId)
+            );
+        })
+        .map(task => ({
+            ...task,
+            topic: (
+                task?.topic &&
+                typeof task.topic === "object"
+            )
+                ? task.topic
+                : topic
+        }));
+
+    return {
+        topic,
+        tasks
+    };
+}
+
+async function openAvailableTaskDetails(subject) {
+    const dialog = ensureTaskDetailsDialog();
+
+    const title = dialog.querySelector(
+        "[data-task-dialog-title]"
+    );
+
+    const subtitle = dialog.querySelector(
+        "[data-task-dialog-subtitle]"
+    );
+
+    const summary = dialog.querySelector(
+        "[data-task-dialog-summary]"
+    );
+
+    const content = dialog.querySelector(
+        "[data-task-dialog-content]"
+    );
+
+    title.textContent = `${subject.name} · Offen`;
+
+    subtitle.textContent =
+        "Noch nicht begonnene Etappen des aktuellen Themas.";
+
+    summary.textContent =
+        "Offene Etappen werden geladen …";
+
+    content.innerHTML = `
+        <div class="arcanum-task-dialog__empty">
+            <p>Etappen werden geladen …</p>
+        </div>
+    `;
+
+    if (typeof dialog.showModal === "function") {
+        if (!dialog.open) {
+            dialog.showModal();
+        }
+    } else {
+        dialog.setAttribute("open", "");
+    }
+
+    try {
+        const result = await fetchOpenTasksForSubject(
+            subject
+        );
+
+        const topicName = textValue(
+            result.topic?.name
+        ).trim();
+
+        if (result.tasks.length === 0) {
+            summary.textContent = topicName
+                ? `Keine offene Etappe im Thema „${topicName}“.`
+                : "Für dieses Fach ist kein aktuelles Thema festgelegt.";
+
+            content.innerHTML = `
+                <div class="arcanum-task-dialog__empty">
+                    <p>
+                        ${
+                            topicName
+                                ? "Alle Etappen dieses Themas wurden " +
+                                  "bereits begonnen, bestanden oder " +
+                                  "gesperrt."
+                                : "Die Lehrkraft hat noch kein " +
+                                  "aktuelles Thema festgelegt."
+                        }
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+        summary.textContent =
+            `${formatStageCount(result.tasks.length)} · ` +
+            `${calculateCoins(result.tasks)} mögliche Münzen`;
+
+        const groups = groupTasksByTopic(
+            result.tasks
+        );
+
+        content.innerHTML = groups
+            .map(group => createTaskGroupHtml(
+                group,
+                "open"
+            ))
+            .join("");
+    } catch (error) {
+        console.error(
+            "Arcanum: Offene Etappen konnten nicht geladen werden.",
+            error
+        );
+
+        summary.textContent =
+            "Offene Etappen konnten nicht geladen werden.";
+
+        content.innerHTML = `
+            <div class="arcanum-task-dialog__empty">
+                <p>
+                    Beim Laden ist ein Fehler aufgetreten.
+                    Bitte versuche es erneut.
+                </p>
+            </div>
+        `;
+    }
+}
+
+async function changeStudentTaskStatus(
+    action,
+    taskId,
+    button
+) {
+    const student = await getArcanumCurrentStudent();
+    const studentId = extractEntityId(student?.id);
+
+    if (studentId === null) {
+        throw new Error(
+            "Die Schüler-ID fehlt."
+        );
+    }
+
+    const endpoint = action === "begin"
+        ? "/begin-task"
+        : "/cancel-task";
+
+    const response = await fetch(endpoint, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            studentId,
+            taskId
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error(
+            `Der Etappenstatus konnte nicht geändert werden ` +
+            `(${response.status}).`
+        );
+    }
+
+    button.classList.add("is-success");
+
+    button.textContent = action === "begin"
+        ? "Etappe begonnen"
+        : "Etappe abgebrochen";
+
+    window.setTimeout(() => {
+        window.location.reload();
+    }, 450);
+}
+
+async function handleTaskActionClick(event) {
+    const button = event.target.closest(
+        "[data-task-action]"
+    );
+
+    if (!button || button.disabled) {
+        return;
+    }
+
+    const action = button.dataset.taskAction;
+    const taskId = Number(button.dataset.taskId);
+
+    if (
+        !["begin", "cancel"].includes(action) ||
+        !Number.isFinite(taskId)
+    ) {
+        return;
+    }
+
+    if (
+        action === "cancel" &&
+        !window.confirm(
+            "Möchtest du diese Etappe wirklich abbrechen?"
+        )
+    ) {
+        return;
+    }
+
+    const originalText = button.textContent;
+
+    button.disabled = true;
+
+    button.textContent = action === "begin"
+        ? "Wird begonnen …"
+        : "Wird abgebrochen …";
+
+    try {
+        await changeStudentTaskStatus(
+            action,
+            taskId,
+            button
+        );
+    } catch (error) {
+        console.error(
+            "Arcanum: Etappenstatus konnte nicht geändert werden.",
+            error
+        );
+
+        button.disabled = false;
+        button.textContent = originalText;
+        button.classList.add("is-error");
+
+        window.setTimeout(() => {
+            button.classList.remove("is-error");
+        }, 1800);
+    }
 }
 
 function groupTasksByTopic(tasks) {
@@ -740,6 +1109,7 @@ function createTaskGroupHtml(group, status) {
 function createTaskDetailRowHtml(task, status) {
     const coins = calculateTaskCoins(task);
     const level = getNiveauInformation(task?.niveau);
+    const taskId = extractEntityId(task?.id ?? task);
 
     const coinText = coins > 0
         ? (
@@ -748,6 +1118,36 @@ function createTaskDetailRowHtml(task, status) {
                 : `${coins} mögliche Münzen`
         )
         : "Münzwert noch offen";
+
+    let actionHtml = "";
+
+    if (taskId !== null && status === "open") {
+        actionHtml = `
+            <button
+                type="button"
+                class="arcanum-task-action-button
+                       arcanum-task-action-button--begin"
+                data-task-action="begin"
+                data-task-id="${taskId}"
+            >
+                Etappe beginnen
+            </button>
+        `;
+    }
+
+    if (taskId !== null && status === "current") {
+        actionHtml = `
+            <button
+                type="button"
+                class="arcanum-task-action-button
+                       arcanum-task-action-button--cancel"
+                data-task-action="cancel"
+                data-task-id="${taskId}"
+            >
+                Etappe abbrechen
+            </button>
+        `;
+    }
 
     return `
         <li class="arcanum-task-row">
@@ -761,14 +1161,19 @@ function createTaskDetailRowHtml(task, status) {
 
                 <strong class="arcanum-task-row__name">
                     ${escapeHtml(
-                        textValue(task?.name) || "Unbenannte Etappe"
+                        textValue(task?.name) ||
+                        "Unbenannte Etappe"
                     )}
                 </strong>
             </div>
 
-            <span class="arcanum-task-row__coins">
-                ${escapeHtml(coinText)}
-            </span>
+            <div class="arcanum-task-row__side">
+                <span class="arcanum-task-row__coins">
+                    ${escapeHtml(coinText)}
+                </span>
+
+                ${actionHtml}
+            </div>
         </li>
     `;
 }
@@ -1303,22 +1708,6 @@ function renderPartnerMatches(container, partners, subject) {
     `;
 }
 
-function createRequestStatus(requests) {
-    if (!requests.length) {
-        return `
-            <p class="arcanum-request-status">
-                Keine offenen Hilfsanfragen
-            </p>
-        `;
-    }
-
-    return `
-        <p class="arcanum-request-status arcanum-request-status--active">
-            ${requests.length} offene
-            ${requests.length === 1 ? "Anfrage" : "Anfragen"}
-        </p>
-    `;
-}
 
 function renderSummary(subjectModels) {
     const totalCoins = subjectModels.reduce(
