@@ -43,5 +43,275 @@
     ],
     "context": "imgs",
     "access_level": "public"
+  },
+  "/arcanum-inspiration-01-mut.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-02-neugier.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-03-lernen.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-04-zusammenhalt.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-05-dranbleiben.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-06-selbstvertrauen.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-07-fragen.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-08-ideen.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-09-abenteuer.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-10-entdeckerweisheit.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-11-geduld.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-12-hilfsbereitschaft.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-13-verantwortung.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-14-konzentration.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-15-hoffnung.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-16-zielstrebigkeit.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-17-freundschaft.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-18-achtsamkeit.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-19-ausprobieren.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-20-gemeinschaft.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-21-lernen-weiter.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-22-team.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-23-durchhalten.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-24-an-dich-glauben.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-25-aus-fehlern-lernen.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-26-neugier-ideen.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-27-ideen-teilen.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-28-nicht-aufgeben.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-29-ziele.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-inspiration-30-achtsamkeit-offene-sinne.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "inspiration"
+    ],
+    "context": "imgs",
+    "access_level": "public"
   }
 }
