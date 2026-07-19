@@ -1,0 +1,2613 @@
+/* arcanum-student-theme-v2 */
+
+:root {
+    --arc-text: #18241d;
+    --arc-text-soft: #31443a;
+    --arc-text-muted: #51645a;
+
+    --arc-gold: #d4ab49;
+    --arc-gold-dark: #8a6423;
+    --arc-gold-light: #f1d68b;
+
+    --arc-cream: rgba(255, 250, 240, 0.72);
+    --arc-cream-strong: rgba(255, 251, 243, 0.82);
+    --arc-cream-soft: rgba(248, 239, 214, 0.62);
+
+    --arc-border: rgba(139, 102, 41, 0.58);
+    --arc-border-soft: rgba(139, 102, 41, 0.34);
+
+    --arc-shadow:
+        0 0.8rem 2rem rgba(12, 22, 18, 0.24),
+        0 0.12rem 0.35rem rgba(75, 54, 21, 0.16);
+
+    --arc-panel-blur: blur(10px) saturate(118%);
+}
+
+/* ==========================================================
+   GRUNDLAYOUT / HINTERGRUND
+   ========================================================== */
+
+html,
+body {
+    min-height: 100%;
+}
+
+body.arcanum-page {
+    color: var(--arc-text) !important;
+    background-color: #183025 !important;
+    background-image:
+        linear-gradient(
+            to bottom,
+            rgba(255, 237, 180, 0.16) 0%,
+            rgba(33, 59, 46, 0.10) 18%,
+            rgba(19, 37, 30, 0.26) 45%,
+            rgba(10, 20, 16, 0.52) 100%
+        ),
+        url("/arcanum-dashboard-background.png"),
+        url("/arcanum-login-background.png") !important;
+    background-position: center top, center top, center top !important;
+    background-repeat: no-repeat, no-repeat, no-repeat !important;
+    background-size: cover, cover, cover !important;
+    background-attachment: fixed, fixed, fixed !important;
+}
+
+body.arcanum-page::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+        radial-gradient(
+            circle at 80% 8%,
+            rgba(255, 226, 151, 0.16),
+            transparent 28rem
+        ),
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.04),
+            rgba(255, 255, 255, 0.00) 30%,
+            rgba(0, 0, 0, 0.10) 100%
+        );
+}
+
+.arcanum-app,
+.arcanum-hero,
+.arcanum-main,
+.arcanum-page {
+    position: relative;
+    z-index: 1;
+    background: transparent !important;
+}
+
+.arcanum-hero,
+.arcanum-main {
+    max-width: min(1580px, calc(100vw - 2rem));
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+.arcanum-main {
+    padding-bottom: 2rem !important;
+}
+
+.arcanum-hero__landscape {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* ==========================================================
+   GEMEINSAME KARTENOPTIK
+   ========================================================== */
+
+.arcanum-profile,
+.arcanum-floating-grades,
+.arcanum-subject-card,
+.arcanum-loading-card,
+.arcanum-task-dialog__panel {
+    background: var(--arc-cream) !important;
+    border: 0.11rem solid var(--arc-border) !important;
+    border-radius: 1.45rem !important;
+    box-shadow: var(--arc-shadow) !important;
+    -webkit-backdrop-filter: var(--arc-panel-blur);
+    backdrop-filter: var(--arc-panel-blur);
+    color: var(--arc-text) !important;
+    overflow: visible !important;
+}
+
+.arcanum-profile,
+.arcanum-floating-grades,
+.arcanum-subject-card {
+    position: relative;
+}
+
+.arcanum-profile::before,
+.arcanum-floating-grades::before,
+.arcanum-subject-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow:
+        inset 0 0 0 0.08rem rgba(255,255,255,0.28),
+        inset 0 0.3rem 0.9rem rgba(255,255,255,0.08);
+}
+
+.arcanum-profile *,
+.arcanum-floating-grades *,
+.arcanum-subject-card * {
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+}
+
+/* ==========================================================
+   PROFILBEREICH
+   ========================================================== */
+
+.arcanum-profile {
+    padding: 1.15rem 1.25rem !important;
+    gap: 1rem !important;
+}
+
+.arcanum-profile > div,
+.arcanum-profile > section,
+.arcanum-profile > article,
+.arcanum-profile > aside {
+    background: transparent !important;
+}
+
+.arcanum-avatar {
+    background:
+        radial-gradient(
+            circle at 36% 28%,
+            #fff8d4,
+            #e4b85a 58%,
+            #9a6a20 100%
+        ) !important;
+    border: 0.2rem solid rgba(255, 242, 200, 0.85) !important;
+    box-shadow:
+        0 0 0 0.10rem rgba(120, 82, 25, 0.65),
+        0 0.45rem 0.9rem rgba(73, 49, 18, 0.16) !important;
+}
+
+#student-initials {
+    color: #2b1d10 !important;
+    text-shadow: 0 0.06rem 0 rgba(255,255,255,0.42);
+}
+
+.arcanum-eyebrow {
+    color: #8a5d1e !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.08em !important;
+}
+
+.arcanum-profile__identity h1,
+#student-name {
+    color: var(--arc-text) !important;
+    font-size: clamp(2rem, 3vw, 3.25rem) !important;
+    line-height: 1.02 !important;
+    text-shadow: none !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.arcanum-profile__details,
+.arcanum-profile__email {
+    gap: 0.45rem !important;
+}
+
+.arcanum-profile__details > span,
+.arcanum-profile__details > div,
+.arcanum-profile__email {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 0.22rem 0.55rem !important;
+    border-radius: 0.6rem !important;
+    background: rgba(255, 252, 244, 0.56) !important;
+    border: 0.08rem solid rgba(128, 92, 33, 0.24) !important;
+    color: var(--arc-text-soft) !important;
+    font-weight: 650 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+
+.arcanum-profile__details strong,
+.arcanum-profile__email strong {
+    color: var(--arc-text) !important;
+}
+
+.arcanum-score-card,
+.arcanum-profile__metric-card {
+    background: rgba(255, 248, 230, 0.62) !important;
+    border: 0.09rem solid rgba(128, 92, 33, 0.36) !important;
+    border-radius: 0.85rem !important;
+    box-shadow: none !important;
+    padding: 0.75rem 0.85rem !important;
+    min-width: 8.8rem !important;
+}
+
+.arcanum-score-card__label,
+.arcanum-profile__metric-label {
+    color: #85581c !important;
+    font-weight: 800 !important;
+}
+
+.arcanum-score-card__value,
+.arcanum-profile__metric-value {
+    color: var(--arc-text) !important;
+    font-weight: 850 !important;
+}
+
+.arcanum-logo-placeholder {
+    width: 4.8rem !important;
+    height: 4.8rem !important;
+    background: url("/arcanum-logo.png") center / contain no-repeat !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+}
+
+.arcanum-logo-placeholder span {
+    display: none !important;
+}
+
+/* ==========================================================
+   BUTTONS
+   ========================================================== */
+
+.arcanum-button,
+.arcanum-button--secondary,
+.arcanum-logout-button {
+    color: #2c2013 !important;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 246, 208, 0.95),
+            rgba(224, 183, 83, 0.95)
+        ) !important;
+    border: 0.1rem solid rgba(126, 88, 27, 0.8) !important;
+    border-radius: 0.72rem !important;
+    box-shadow:
+        0 0.18rem 0.36rem rgba(73, 49, 18, 0.16),
+        inset 0 0.06rem 0 rgba(255,255,255,0.72) !important;
+    font-weight: 800 !important;
+    text-decoration: none !important;
+}
+
+.arcanum-button:hover,
+.arcanum-button--secondary:hover,
+.arcanum-logout-button:hover {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 250, 228, 0.98),
+            rgba(235, 199, 104, 0.98)
+        ) !important;
+    transform: translateY(-0.04rem);
+}
+
+/* ==========================================================
+   MÜNZEN & NOTEN
+   ========================================================== */
+
+.arcanum-floating-grades {
+    padding: 0.7rem 0.8rem !important;
+}
+
+.arcanum-floating-grades__header h2,
+#grade-title {
+    color: var(--arc-text) !important;
+    font-size: 1.35rem !important;
+    line-height: 1.15 !important;
+}
+
+.arcanum-floating-grades__hint {
+    color: var(--arc-text-muted) !important;
+}
+
+.arcanum-grade-pill {
+    background: rgba(255, 251, 242, 0.64) !important;
+    border: 0.08rem solid rgba(128, 92, 33, 0.30) !important;
+    border-radius: 0.72rem !important;
+    box-shadow: none !important;
+    min-height: 2.2rem !important;
+}
+
+.arcanum-grade-pill__coins {
+    color: #94661d !important;
+    font-weight: 900 !important;
+}
+
+.arcanum-grade-pill__label {
+    color: var(--arc-text) !important;
+    font-weight: 750 !important;
+}
+
+/* ==========================================================
+   FACHKARTEN
+   ========================================================== */
+
+.arcanum-subject-card {
+    padding: 1rem 1.05rem 1.1rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.arcanum-subject-card__header,
+.arcanum-subject-card__body,
+.arcanum-subject-card__footer,
+.arcanum-subject-card__meta {
+    background: transparent !important;
+}
+
+.arcanum-subject-card__title h3 {
+    color: var(--arc-text) !important;
+    font-size: 2rem !important;
+    line-height: 1.1 !important;
+    margin-bottom: 0.2rem !important;
+}
+
+.arcanum-subject-card__title p {
+    color: var(--arc-text-soft) !important;
+    line-height: 1.35 !important;
+}
+
+.arcanum-subject-icon {
+    background:
+        radial-gradient(
+            circle at 35% 26%,
+            #fff8dc,
+            #eccd7b 72%,
+            #cb9b39
+        ) !important;
+    color: #2f2213 !important;
+    border: 0.1rem solid rgba(126, 88, 27, 0.75) !important;
+    box-shadow: none !important;
+}
+
+.arcanum-coin-badge {
+    position: relative;
+    padding-left: 3.1rem !important;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 244, 208, 0.88),
+            rgba(225, 183, 79, 0.88)
+        ) !important;
+    border: 0.1rem solid rgba(126, 88, 27, 0.75) !important;
+    border-radius: 0.85rem !important;
+    color: #2b1d10 !important;
+    box-shadow: none !important;
+    min-height: 3rem !important;
+}
+
+.arcanum-coin-badge::before {
+    content: "";
+    position: absolute;
+    left: 0.42rem;
+    top: 50%;
+    width: 2.2rem;
+    height: 2.2rem;
+    transform: translateY(-50%);
+    background: url("/arcanum-coin.png") center / contain no-repeat;
+}
+
+.arcanum-current-grade,
+.arcanum-subject-stats > div,
+.arcanum-subject-stat-button,
+.arcanum-subject-actions,
+.arcanum-subject-actions--vertical,
+.arcanum-partner-card,
+.arcanum-task-row,
+.arcanum-task-dialog__summary,
+.arcanum-task-dialog__empty {
+    background: rgba(255, 251, 242, 0.56) !important;
+    border: 0.08rem solid rgba(128, 92, 33, 0.26) !important;
+    border-radius: 0.8rem !important;
+    color: var(--arc-text) !important;
+    box-shadow: none !important;
+}
+
+.arcanum-current-grade__label,
+.arcanum-current-grade__value,
+.arcanum-subject-actions__overline,
+.arcanum-subject-actions__instruction,
+.arcanum-subject-actions__message,
+.arcanum-task-dialog__subtitle {
+    color: var(--arc-text-soft) !important;
+}
+
+.arcanum-subject-stats {
+    gap: 0.6rem !important;
+}
+
+.arcanum-subject-stats > div,
+.arcanum-subject-stat-button {
+    padding: 0.85rem 0.9rem !important;
+    min-height: 4.25rem !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.25 !important;
+}
+
+.arcanum-subject-stat-button--completed {
+    background: rgba(214, 235, 214, 0.64) !important;
+}
+
+.arcanum-subject-stat-button--locked {
+    background: rgba(229, 226, 217, 0.55) !important;
+    color: #5f655f !important;
+}
+
+.arcanum-subject-actions,
+.arcanum-subject-actions--vertical {
+    padding: 0.85rem !important;
+}
+
+.arcanum-subject-actions__heading strong {
+    color: var(--arc-text) !important;
+}
+
+.arcanum-subject-actions button,
+.arcanum-subject-actions--vertical button,
+[data-subject-request] {
+    min-height: 6.2rem !important;
+    padding: 0.95rem 0.8rem !important;
+    border-radius: 0.8rem !important;
+    background: rgba(255, 251, 242, 0.60) !important;
+    border: 0.08rem solid rgba(128, 92, 33, 0.30) !important;
+    color: var(--arc-text) !important;
+    box-shadow: none !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.3 !important;
+}
+
+.arcanum-subject-actions button:hover:not(:disabled),
+.arcanum-subject-actions--vertical button:hover:not(:disabled),
+[data-subject-request]:hover:not(:disabled) {
+    background: rgba(255, 247, 221, 0.82) !important;
+    border-color: rgba(126, 88, 27, 0.55) !important;
+}
+
+.arcanum-subject-actions button.is-active,
+.arcanum-subject-actions--vertical button.is-active,
+[data-subject-request].is-active {
+    background: rgba(69, 112, 82, 0.82) !important;
+    border-color: rgba(44, 78, 56, 0.95) !important;
+    color: #fffef8 !important;
+}
+
+/* ==========================================================
+   DIALOG
+   ========================================================== */
+
+.arcanum-task-dialog::backdrop {
+    background: rgba(7, 16, 13, 0.72) !important;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+.arcanum-task-dialog__panel {
+    padding: 0 !important;
+}
+
+.arcanum-task-dialog__header {
+    background: rgba(247, 235, 199, 0.56) !important;
+    border-bottom: 0.08rem solid rgba(128, 92, 33, 0.24) !important;
+    color: var(--arc-text) !important;
+}
+
+.arcanum-task-dialog__header h2 {
+    color: var(--arc-text) !important;
+}
+
+.arcanum-task-dialog__close {
+    background: rgba(255, 251, 242, 0.66) !important;
+    border: 0.08rem solid rgba(128, 92, 33, 0.28) !important;
+    color: var(--arc-text) !important;
+}
+
+.arcanum-task-action-button {
+    border-radius: 0.68rem !important;
+}
+
+.arcanum-task-action-button--begin {
+    background: rgba(70, 115, 85, 0.88) !important;
+    border-color: rgba(44, 78, 56, 1) !important;
+    color: #fffef8 !important;
+}
+
+.arcanum-task-action-button--cancel {
+    background: rgba(161, 92, 67, 0.88) !important;
+    border-color: rgba(115, 57, 38, 1) !important;
+    color: #fffef8 !important;
+}
+
+/* ==========================================================
+   FEHLER / LOADING
+   ========================================================== */
+
+.arcanum-loading-card {
+    padding: 1rem 1.1rem !important;
+}
+
+.arcanum-spinner {
+    border-color: rgba(128, 92, 33, 0.20) !important;
+    border-top-color: rgba(128, 92, 33, 0.92) !important;
+}
+
+.arcanum-error {
+    background: rgba(135, 59, 41, 0.86) !important;
+    border: 0.08rem solid rgba(255, 219, 194, 0.45) !important;
+    color: #fff8f2 !important;
+    border-radius: 0.8rem !important;
+}
+
+/* ==========================================================
+   KLEINERE DISPLAYS
+   ========================================================== */
+
+@media (max-width: 1200px) {
+    .arcanum-profile__identity h1,
+    #student-name {
+        font-size: clamp(1.7rem, 3vw, 2.5rem) !important;
+    }
+
+    .arcanum-subject-card__title h3 {
+        font-size: 1.6rem !important;
+    }
+}
+
+@media (max-width: 860px) {
+    body.arcanum-page {
+        background-attachment: scroll, scroll, scroll !important;
+    }
+
+    .arcanum-hero,
+    .arcanum-main {
+        max-width: calc(100vw - 1rem);
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    .arcanum-profile,
+    .arcanum-floating-grades,
+    .arcanum-subject-card {
+        border-radius: 1.1rem !important;
+    }
+
+    .arcanum-subject-actions button,
+    .arcanum-subject-actions--vertical button,
+    [data-subject-request] {
+        min-height: 5.2rem !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .arcanum-button,
+    .arcanum-button--secondary,
+    .arcanum-logout-button {
+        transition: none !important;
+        transform: none !important;
+    }
+}
+
+/* arcanum-dashboard-background-v1:start */
+
+/*
+ * Reines Landschaftsbild als Seitenhintergrund.
+ * Keine UI-Elemente sind Teil der Grafik.
+ */
+
+html {
+    min-height: 100% !important;
+    background-color: #17271f !important;
+}
+
+body.arcanum-page {
+    min-height: 100vh !important;
+
+    background-color: #17271f !important;
+
+    background-image:
+        linear-gradient(
+            to bottom,
+            rgba(16, 27, 22, 0.05) 0%,
+            rgba(16, 27, 22, 0.08) 24%,
+            rgba(12, 22, 18, 0.20) 54%,
+            rgba(8, 17, 13, 0.38) 100%
+        ),
+        url("/arcanum-dashboard-background.png") !important;
+
+    background-position:
+        center top,
+        center top !important;
+
+    background-repeat:
+        no-repeat,
+        no-repeat !important;
+
+    background-size:
+        cover,
+        cover !important;
+
+    background-attachment:
+        fixed,
+        fixed !important;
+}
+
+/*
+ * Der gesamte Seitenkopf besitzt keine eigene Fläche mehr.
+ * Nur Profil- und Notenkasten bleiben als einzelne Karten.
+ */
+
+header.arcanum-hero,
+.arcanum-hero,
+.arcanum-hero__landscape {
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    box-shadow: none !important;
+
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
+
+header.arcanum-hero::before,
+header.arcanum-hero::after,
+.arcanum-hero::before,
+.arcanum-hero::after,
+.arcanum-hero__landscape::before,
+.arcanum-hero__landscape::after {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    box-shadow: none !important;
+}
+
+/*
+ * Außenabstand ohne farbige Kopfzeile.
+ */
+
+.arcanum-hero {
+    padding-top: 1rem !important;
+    padding-bottom: 0.7rem !important;
+}
+
+/*
+ * Karten bleiben leicht transparent, sodass das Landschaftsbild
+ * sichtbar bleibt. Die Schrift erhält trotzdem genug Kontrast.
+ */
+
+.arcanum-profile,
+.arcanum-floating-grades,
+.arcanum-subject-card,
+.arcanum-loading-card {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 252, 242, 0.79),
+            rgba(244, 231, 196, 0.70)
+        ) !important;
+
+    -webkit-backdrop-filter:
+        blur(10px)
+        saturate(115%) !important;
+
+    backdrop-filter:
+        blur(10px)
+        saturate(115%) !important;
+}
+
+@media (max-width: 860px) {
+    body.arcanum-page {
+        background-attachment:
+            scroll,
+            scroll !important;
+
+        background-position:
+            42% top,
+            42% top !important;
+    }
+}
+
+/* arcanum-dashboard-background-v1:end */
+
+
+/* arcanum-dashboard-refinement-v1:start */
+
+/* ==========================================================
+   KOPFBEREICH: NUR NOCH DIE INNEREN SICHTBAREN KARTEN
+   ========================================================== */
+
+.arcanum-hero {
+    display: grid !important;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        clamp(14.5rem, 17vw, 16.5rem) !important;
+
+    gap: 0.8rem !important;
+    align-items: stretch !important;
+
+    min-height: 0 !important;
+    overflow: visible !important;
+
+    padding:
+        1rem
+        1rem
+        0.75rem !important;
+}
+
+/*
+ * .arcanum-profile ist nur noch ein unsichtbarer
+ * Layout-Container. Damit verschwindet der große äußere Kasten.
+ */
+
+.arcanum-profile {
+    grid-column: 1 !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        6.8rem
+        minmax(0, 1fr)
+        4.5rem !important;
+
+    gap: 0.75rem !important;
+    align-items: center !important;
+
+    width: 100% !important;
+    min-height: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+
+    overflow: visible !important;
+}
+
+.arcanum-profile::before,
+.arcanum-profile::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* ==========================================================
+   VORLÄUFIGER AVATAR
+   ========================================================== */
+
+.arcanum-avatar {
+    grid-column: 1 !important;
+
+    position: relative !important;
+    z-index: 3 !important;
+
+    width: 6.6rem !important;
+    height: 6.6rem !important;
+
+    margin: 0 !important;
+
+    background-color: #f5e8c8 !important;
+    background-image:
+        url("/arcanum-neutral-avatar.png") !important;
+
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+
+    border:
+        0.18rem solid
+        rgba(255, 241, 194, 0.94) !important;
+
+    border-radius: 50% !important;
+
+    box-shadow:
+        0 0 0 0.11rem rgba(128, 88, 27, 0.74),
+        0 0.42rem 0.9rem rgba(35, 27, 15, 0.24) !important;
+
+    overflow: hidden !important;
+}
+
+#student-initials {
+    display: none !important;
+}
+
+.arcanum-avatar img {
+    position: absolute !important;
+    inset: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+/* ==========================================================
+   NUR DER INNERE PROFILKASTEN BLEIBT SICHTBAR
+   ========================================================== */
+
+.arcanum-profile__identity {
+    grid-column: 2 !important;
+
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/*
+ * Der dynamisch erzeugte identity-main-Kasten ist die
+ * einzige sichtbare Profilfläche.
+ */
+
+.arcanum-profile__identity-main {
+    width: 100% !important;
+    min-height: 100% !important;
+
+    padding:
+        0.95rem
+        1.05rem !important;
+
+    color: var(--arc-text) !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 252, 242, 0.54),
+            rgba(239, 224, 184, 0.38)
+        ) !important;
+
+    border:
+        0.1rem solid
+        rgba(128, 91, 34, 0.52) !important;
+
+    border-radius: 1.15rem !important;
+
+    box-shadow:
+        0 0.65rem 1.35rem rgba(17, 27, 22, 0.18),
+        inset 0 0 0 0.06rem rgba(255, 255, 255, 0.30) !important;
+
+    -webkit-backdrop-filter:
+        blur(5px)
+        saturate(108%) !important;
+
+    backdrop-filter:
+        blur(5px)
+        saturate(108%) !important;
+
+    overflow: visible !important;
+}
+
+/*
+ * Fallback, bis das JavaScript identity-main erzeugt hat.
+ */
+
+.arcanum-profile__identity:not(
+    :has(> .arcanum-profile__identity-main)
+) {
+    padding:
+        0.95rem
+        1.05rem !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 252, 242, 0.54),
+            rgba(239, 224, 184, 0.38)
+        ) !important;
+
+    border:
+        0.1rem solid
+        rgba(128, 91, 34, 0.52) !important;
+
+    border-radius: 1.15rem !important;
+
+    -webkit-backdrop-filter:
+        blur(5px)
+        saturate(108%) !important;
+
+    backdrop-filter:
+        blur(5px)
+        saturate(108%) !important;
+}
+
+/*
+ * Die alten Quellen für Gesamtmünzen und Platz werden durch
+ * das JavaScript bereits in den inneren Profilkasten kopiert.
+ */
+
+.arcanum-profile__score,
+.arcanum-profile__metrics-source-empty {
+    display: none !important;
+}
+
+/*
+ * Die dynamischen Kennzahlen bleiben sichtbar, aber nicht mehr
+ * als mehrere zusätzliche Karten.
+ */
+
+.arcanum-profile__metrics {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.35rem !important;
+
+    margin: 0.55rem 0 0 !important;
+    padding: 0 !important;
+
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.arcanum-profile__metric-card {
+    min-width: 6.5rem !important;
+
+    padding:
+        0.3rem
+        0.7rem !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    border-left:
+        0.08rem solid
+        rgba(128, 91, 34, 0.32) !important;
+
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.arcanum-profile__metric-card:first-child {
+    border-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+.arcanum-profile__metric-label {
+    color: #76501b !important;
+}
+
+.arcanum-profile__metric-value {
+    color: var(--arc-text) !important;
+}
+
+/* Arcanum-Logo bleibt als reines Logo ohne weiteren Kasten. */
+
+.arcanum-logo-placeholder {
+    grid-column: 3 !important;
+
+    width: 4.3rem !important;
+    height: 4.3rem !important;
+
+    margin: 0 !important;
+
+    background:
+        url("/arcanum-logo.png")
+        center / contain
+        no-repeat !important;
+
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/* ==========================================================
+   E-MAIL GENAU WIE KLASSE UND GRADUIERUNG
+   ========================================================== */
+
+.arcanum-profile__details {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+
+    gap: 0.38rem !important;
+    margin-bottom: 0.6rem !important;
+}
+
+.arcanum-profile__details > span,
+.arcanum-profile__details > div,
+.arcanum-profile__details > .arcanum-profile__email,
+.arcanum-profile__email {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+
+    width: auto !important;
+
+    margin: 0 !important;
+    padding:
+        0.22rem
+        0.55rem !important;
+
+    color: var(--arc-text-soft) !important;
+
+    background:
+        rgba(255, 252, 244, 0.50) !important;
+
+    border:
+        0.07rem solid
+        rgba(128, 92, 33, 0.24) !important;
+
+    border-radius: 0.58rem !important;
+
+    font-size: 0.86rem !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+}
+
+.arcanum-profile__email > span,
+.arcanum-profile__email > strong {
+    display: inline !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+}
+
+.arcanum-profile__email > strong,
+.arcanum-profile__details strong {
+    color: var(--arc-text) !important;
+    font-weight: 800 !important;
+}
+
+/* ==========================================================
+   MÜNZEN & NOTEN: FEST IM KOPFBEREICH
+   ========================================================== */
+
+.arcanum-floating-grades {
+    grid-column: 2 !important;
+
+    position: relative !important;
+    inset: auto !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding:
+        0.55rem
+        0.65rem !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 252, 242, 0.54),
+            rgba(239, 224, 184, 0.38)
+        ) !important;
+
+    border:
+        0.1rem solid
+        rgba(128, 91, 34, 0.52) !important;
+
+    border-radius: 1.15rem !important;
+
+    box-shadow:
+        0 0.65rem 1.35rem rgba(17, 27, 22, 0.18),
+        inset 0 0 0 0.06rem rgba(255, 255, 255, 0.30) !important;
+
+    -webkit-backdrop-filter:
+        blur(5px)
+        saturate(108%) !important;
+
+    backdrop-filter:
+        blur(5px)
+        saturate(108%) !important;
+
+    overflow: hidden !important;
+}
+
+.arcanum-floating-grades::before,
+.arcanum-floating-grades::after {
+    content: none !important;
+    display: none !important;
+}
+
+.arcanum-floating-grades__header {
+    flex: 0 0 auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.arcanum-floating-grades__header h2 {
+    margin:
+        0
+        0
+        0.42rem !important;
+
+    font-size: 1.1rem !important;
+    line-height: 1.1 !important;
+    text-align: center !important;
+}
+
+.arcanum-grade-scale--floating {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.25rem !important;
+
+    width: 100% !important;
+    min-height: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.arcanum-grade-pill {
+    display: grid !important;
+
+    grid-template-columns:
+        4.05rem
+        minmax(0, 1fr) !important;
+
+    align-items: center !important;
+    gap: 0.3rem !important;
+
+    width: 100% !important;
+    min-height: 1.6rem !important;
+
+    margin: 0 !important;
+    padding:
+        0.16rem
+        0.38rem !important;
+
+    background:
+        rgba(255, 252, 244, 0.48) !important;
+
+    border:
+        0.06rem solid
+        rgba(128, 92, 33, 0.24) !important;
+
+    border-radius: 0.55rem !important;
+
+    box-shadow: none !important;
+
+    font-size: 0.72rem !important;
+    line-height: 1.05 !important;
+
+    overflow: hidden !important;
+}
+
+.arcanum-grade-pill__coins,
+.arcanum-grade-pill__label {
+    min-width: 0 !important;
+    white-space: nowrap !important;
+}
+
+.arcanum-grade-pill__coins {
+    color: #805517 !important;
+}
+
+.arcanum-grade-pill__label {
+    color: var(--arc-text) !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* ==========================================================
+   FACHKARTEN DEUTLICH TRANSPARENTER
+   ========================================================== */
+
+.arcanum-subject-card,
+.arcanum-loading-card {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 252, 242, 0.48),
+            rgba(239, 224, 184, 0.32)
+        ) !important;
+
+    border-color:
+        rgba(128, 91, 34, 0.54) !important;
+
+    box-shadow:
+        0 0.7rem 1.5rem rgba(12, 22, 18, 0.17),
+        inset 0 0 0 0.05rem rgba(255, 255, 255, 0.24) !important;
+
+    -webkit-backdrop-filter:
+        blur(4px)
+        saturate(106%) !important;
+
+    backdrop-filter:
+        blur(4px)
+        saturate(106%) !important;
+}
+
+.arcanum-subject-card::before {
+    box-shadow:
+        inset 0 0 0 0.05rem
+        rgba(255, 255, 255, 0.18) !important;
+}
+
+/* ==========================================================
+   ORIGINALMÜNZE: NUR GOLDENER UND GLÄNZENDER
+   ========================================================== */
+
+.arcanum-coin-badge {
+    display: grid !important;
+
+    grid-template-columns:
+        2.45rem
+        minmax(3.2rem, 1fr) !important;
+
+    grid-template-rows:
+        auto
+        auto !important;
+
+    align-items: center !important;
+
+    width: 8.9rem !important;
+    min-width: 8.9rem !important;
+    min-height: 3.35rem !important;
+
+    padding:
+        0.34rem
+        0.62rem
+        0.34rem
+        2.95rem !important;
+
+    text-align: center !important;
+    overflow: hidden !important;
+}
+
+.arcanum-coin-badge::before {
+    left: 0.42rem !important;
+
+    width: 2.35rem !important;
+    height: 2.35rem !important;
+
+    background-image:
+        url("/arcanum-coin.png") !important;
+
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+
+    filter:
+        saturate(1.30)
+        brightness(1.14)
+        contrast(1.06)
+        drop-shadow(
+            0 0.10rem 0.09rem rgba(91, 54, 4, 0.42)
+        )
+        drop-shadow(
+            0 0 0.28rem rgba(255, 220, 91, 0.34)
+        ) !important;
+}
+
+.arcanum-coin-badge strong {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+
+    display: block !important;
+
+    margin: 0 !important;
+
+    color: #34220d !important;
+
+    font-size: 1.75rem !important;
+    line-height: 1 !important;
+    text-align: center !important;
+}
+
+.arcanum-coin-badge span {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+
+    display: block !important;
+
+    margin: 0.05rem 0 0 !important;
+
+    color: #5e4017 !important;
+
+    font-size: 0.68rem !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    text-align: center !important;
+}
+
+/* ==========================================================
+   FORTSCHRITT LESBAR
+   ========================================================== */
+
+.arcanum-progress,
+.arcanum-progress__labels {
+    color: var(--arc-text-soft) !important;
+}
+
+.arcanum-progress__labels,
+.arcanum-progress__labels span,
+.arcanum-progress__labels strong {
+    opacity: 1 !important;
+}
+
+.arcanum-progress__labels span {
+    color: #405047 !important;
+    font-weight: 750 !important;
+}
+
+.arcanum-progress__labels strong {
+    color: var(--arc-text) !important;
+}
+
+/* ==========================================================
+   AKTIONSBUTTONS UND STATUSANZEIGEN
+   ========================================================== */
+
+.arcanum-subject-actions,
+.arcanum-subject-actions--vertical {
+    background:
+        rgba(255, 251, 242, 0.38) !important;
+}
+
+.arcanum-request-button,
+button[data-subject-request] {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 0.24rem !important;
+
+    min-height: 6.15rem !important;
+
+    padding:
+        0.65rem
+        0.55rem !important;
+
+    color: var(--arc-text) !important;
+
+    background:
+        rgba(255, 251, 242, 0.43) !important;
+
+    overflow: hidden !important;
+}
+
+.arcanum-request-button__symbol {
+    flex: 0 0 auto !important;
+    color: #594b26 !important;
+}
+
+.arcanum-request-button__label {
+    display: block !important;
+
+    max-width: 100% !important;
+
+    color: #1d2a23 !important;
+
+    font-weight: 800 !important;
+    line-height: 1.15 !important;
+    text-align: center !important;
+
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+
+.arcanum-request-button__status,
+[data-request-status] {
+    position: static !important;
+    inset: auto !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    max-width: 100% !important;
+
+    margin:
+        0.12rem
+        auto
+        0 !important;
+
+    padding:
+        0.13rem
+        0.45rem !important;
+
+    color: #34463c !important;
+
+    background:
+        rgba(24, 36, 29, 0.13) !important;
+
+    border: 0 !important;
+    border-radius: 999px !important;
+
+    font-size: 0.64rem !important;
+    font-weight: 800 !important;
+    line-height: 1.05 !important;
+
+    white-space: nowrap !important;
+
+    transform: none !important;
+}
+
+.arcanum-request-button.is-active,
+button[data-subject-request].is-active {
+    color: #fffef8 !important;
+
+    background:
+        rgba(58, 103, 72, 0.82) !important;
+}
+
+.arcanum-request-button.is-active
+.arcanum-request-button__label,
+.arcanum-request-button.is-active
+.arcanum-request-button__symbol {
+    color: #fffef8 !important;
+}
+
+.arcanum-request-button.is-active
+.arcanum-request-button__status {
+    color: #fffef8 !important;
+
+    background:
+        rgba(13, 34, 21, 0.32) !important;
+}
+
+/* ==========================================================
+   OFFEN / AKTUELL / BESTANDEN / GESPERRT LESBAR
+   ========================================================== */
+
+.arcanum-subject-stats > div,
+.arcanum-subject-stat-button {
+    background:
+        rgba(255, 251, 242, 0.40) !important;
+}
+
+.arcanum-subject-stat-button__label {
+    color: #4b5c52 !important;
+    opacity: 1 !important;
+}
+
+.arcanum-subject-stat-button__value {
+    color: #18241d !important;
+    opacity: 1 !important;
+}
+
+.arcanum-subject-stat-button__action {
+    color: #76531d !important;
+    opacity: 1 !important;
+}
+
+.arcanum-subject-stat-button--completed
+.arcanum-subject-stat-button__action {
+    color: #2f6a3d !important;
+}
+
+.arcanum-subject-stat-button--locked
+.arcanum-subject-stat-button__label,
+.arcanum-subject-stat-button--locked
+.arcanum-subject-stat-button__value,
+.arcanum-subject-stat-button--locked
+.arcanum-subject-stat-button__action {
+    color: #59635d !important;
+    opacity: 1 !important;
+}
+
+/* ==========================================================
+   KLEINERE BILDSCHIRME
+   ========================================================== */
+
+@media (max-width: 1050px) {
+    .arcanum-hero {
+        grid-template-columns: 1fr !important;
+    }
+
+    .arcanum-profile,
+    .arcanum-floating-grades {
+        grid-column: 1 !important;
+    }
+
+    .arcanum-floating-grades {
+        height: auto !important;
+    }
+
+    .arcanum-profile {
+        grid-template-columns:
+            5.7rem
+            minmax(0, 1fr)
+            3.7rem !important;
+    }
+
+    .arcanum-avatar {
+        width: 5.5rem !important;
+        height: 5.5rem !important;
+    }
+
+    .arcanum-logo-placeholder {
+        width: 3.6rem !important;
+        height: 3.6rem !important;
+    }
+}
+
+@media (max-width: 650px) {
+    .arcanum-profile {
+        grid-template-columns:
+            4.8rem
+            minmax(0, 1fr) !important;
+    }
+
+    .arcanum-avatar {
+        width: 4.6rem !important;
+        height: 4.6rem !important;
+    }
+
+    .arcanum-logo-placeholder {
+        display: none !important;
+    }
+}
+
+/* arcanum-dashboard-refinement-v1:end */
+
+
+
+/* arcanum-dashboard-refinement-v7:start */
+
+/* ==========================================================
+   VERBINDLICHER KOPFBEREICH V7
+
+   Eine einzige sichtbare Kopfkarte:
+   Avatar | Profil | Gesamtmünzen/Platz | Münzen & Noten
+   ========================================================== */
+
+/* ----------------------------------------------------------
+   EINZIGER ÄUSSERER KOPFKASTEN
+   ---------------------------------------------------------- */
+
+header.arcanum-hero {
+    position: relative !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        17rem !important;
+
+    align-items: center !important;
+    gap: 1rem !important;
+
+    width:
+        min(
+            1580px,
+            calc(100vw - 2rem)
+        ) !important;
+
+    min-height: 0 !important;
+    height: auto !important;
+
+    margin:
+        1rem
+        auto
+        0.85rem !important;
+
+    padding:
+        0.85rem
+        0.95rem !important;
+
+    color: var(--arc-text) !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 252, 242, 0.30),
+            rgba(239, 224, 184, 0.18)
+        ) !important;
+
+    border:
+        0.1rem solid
+        rgba(128, 91, 34, 0.46) !important;
+
+    border-radius: 1.4rem !important;
+
+    box-shadow:
+        0 0.55rem 1.2rem
+        rgba(12, 22, 18, 0.14),
+        inset 0 0 0 0.05rem
+        rgba(255, 255, 255, 0.18) !important;
+
+    -webkit-backdrop-filter:
+        blur(4px)
+        saturate(104%) !important;
+
+    backdrop-filter:
+        blur(4px)
+        saturate(104%) !important;
+
+    overflow: hidden !important;
+}
+
+/*
+ * Dieses Element war nur eine alte dekorative Landschaftsebene
+ * und erzeugte den leeren Balken im Kopf.
+ */
+
+header.arcanum-hero > .arcanum-hero__landscape {
+    display: none !important;
+}
+
+/* Alte Pseudoelemente des Kopfes vollständig abschalten. */
+
+header.arcanum-hero::before,
+header.arcanum-hero::after,
+header.arcanum-hero > .arcanum-hero__landscape::before,
+header.arcanum-hero > .arcanum-hero__landscape::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* ----------------------------------------------------------
+   PROFIL ALS NORMALE DREISPALTIGE INNENSTRUKTUR
+   ---------------------------------------------------------- */
+
+header.arcanum-hero > .arcanum-profile {
+    grid-column: 1 !important;
+
+    position: relative !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        6.4rem
+        minmax(0, 1fr)
+        9.4rem !important;
+
+    grid-template-rows: auto !important;
+
+    align-items: center !important;
+    gap: 0.9rem !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+
+    overflow: visible !important;
+}
+
+header.arcanum-hero > .arcanum-profile::before,
+header.arcanum-hero > .arcanum-profile::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* ----------------------------------------------------------
+   AVATAR LINKS
+   ---------------------------------------------------------- */
+
+header.arcanum-hero
+> .arcanum-profile
+> .arcanum-avatar {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+
+    display: block !important;
+
+    width: 6.1rem !important;
+    height: 6.1rem !important;
+    min-width: 6.1rem !important;
+    min-height: 6.1rem !important;
+
+    margin: 0 !important;
+
+    background-color: #f3e4bf !important;
+
+    background-image:
+        url("/arcanum-neutral-avatar.png") !important;
+
+    background-position:
+        center center !important;
+
+    background-repeat:
+        no-repeat !important;
+
+    background-size:
+        cover !important;
+
+    border:
+        0.18rem solid
+        rgba(255, 243, 202, 0.94) !important;
+
+    border-radius: 50% !important;
+
+    box-shadow:
+        0 0 0 0.1rem
+        rgba(120, 82, 25, 0.72),
+        0 0.35rem 0.75rem
+        rgba(38, 28, 14, 0.22) !important;
+
+    overflow: hidden !important;
+}
+
+header.arcanum-hero
+> .arcanum-profile
+> .arcanum-avatar
+#student-initials {
+    display: none !important;
+}
+
+header.arcanum-hero
+> .arcanum-profile
+> .arcanum-avatar
+img {
+    position: absolute !important;
+    inset: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    object-fit: cover !important;
+    border-radius: 50% !important;
+}
+
+/* ----------------------------------------------------------
+   NAME, DATEN UND BUTTONS IN DER MITTE
+   ---------------------------------------------------------- */
+
+/*
+ * Das JavaScript erzeugt identity-main als direkten Kindknoten
+ * des Profils. Dieser Bereich bleibt vollständig rahmenlos.
+ */
+
+header.arcanum-hero
+> .arcanum-profile
+> .arcanum-profile__identity-main {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+
+    display: block !important;
+
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
+
+/* Fallback vor beziehungsweise ohne dynamische Umgruppierung. */
+
+header.arcanum-hero
+> .arcanum-profile
+> .arcanum-profile__identity {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.arcanum-profile__identity-main
+.arcanum-profile__identity {
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+header.arcanum-hero #student-name {
+    max-width: none !important;
+
+    margin:
+        0.1rem
+        0
+        0.42rem !important;
+
+    color: var(--arc-text) !important;
+
+    font-size:
+        clamp(
+            2rem,
+            3vw,
+            3rem
+        ) !important;
+
+    line-height: 0.98 !important;
+}
+
+/* Klasse, Graduierung und E-Mail identisch. */
+
+header.arcanum-hero .arcanum-profile__details {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+
+    gap: 0.38rem !important;
+
+    margin:
+        0
+        0
+        0.55rem !important;
+}
+
+header.arcanum-hero
+.arcanum-profile__details
+> span,
+header.arcanum-hero
+.arcanum-profile__details
+> div,
+header.arcanum-hero
+.arcanum-profile__email {
+    display: inline-flex !important;
+    align-items: center !important;
+
+    gap: 0.32rem !important;
+
+    width: auto !important;
+
+    margin: 0 !important;
+
+    padding:
+        0.21rem
+        0.5rem !important;
+
+    color: var(--arc-text-soft) !important;
+
+    background:
+        rgba(255, 252, 244, 0.57) !important;
+
+    border:
+        0.07rem solid
+        rgba(128, 92, 33, 0.24) !important;
+
+    border-radius: 0.55rem !important;
+
+    font-size: 0.82rem !important;
+    line-height: 1.12 !important;
+}
+
+header.arcanum-hero
+.arcanum-profile__email
+> span,
+header.arcanum-hero
+.arcanum-profile__email
+> strong {
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+}
+
+header.arcanum-hero
+.arcanum-profile__details strong,
+header.arcanum-hero
+.arcanum-profile__email strong {
+    color: var(--arc-text) !important;
+    font-weight: 800 !important;
+}
+
+/* ----------------------------------------------------------
+   GESAMTMÜNZEN UND PLATZ ALS NORMALE DRITTE SPALTE
+   ---------------------------------------------------------- */
+
+header.arcanum-hero
+> .arcanum-profile
+> .arcanum-profile__metrics {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+
+    position: static !important;
+    inset: auto !important;
+
+    display: grid !important;
+
+    grid-template-columns: 1fr !important;
+    grid-template-rows:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        ) !important;
+
+    align-self: stretch !important;
+    align-items: stretch !important;
+
+    gap: 0 !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+
+    transform: none !important;
+}
+
+/*
+ * Keine zusätzlichen Kärtchen: nur eine ruhige,
+ * mittig ausgerichtete Kennzahlenspalte.
+ */
+
+header.arcanum-hero
+.arcanum-profile__metric-card {
+    display: flex !important;
+    flex-direction: column !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+
+    padding:
+        0.25rem
+        0.4rem !important;
+
+    text-align: center !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+header.arcanum-hero
+.arcanum-profile__metric-card
++ .arcanum-profile__metric-card {
+    border-top:
+        0.07rem solid
+        rgba(128, 92, 33, 0.3) !important;
+}
+
+header.arcanum-hero
+.arcanum-profile__metric-label {
+    display: block !important;
+
+    margin: 0 0 0.1rem !important;
+
+    color: #76501b !important;
+
+    font-size: 0.67rem !important;
+    font-weight: 850 !important;
+    letter-spacing: 0.06em !important;
+    line-height: 1.05 !important;
+
+    text-align: center !important;
+}
+
+header.arcanum-hero
+.arcanum-profile__metric-value {
+    display: block !important;
+
+    margin: 0 !important;
+
+    color: var(--arc-text) !important;
+
+    font-size: 1.1rem !important;
+    font-weight: 900 !important;
+    line-height: 1.08 !important;
+
+    text-align: center !important;
+}
+
+/* Alte Quellkarten und altes Logo werden nicht mehr dargestellt. */
+
+header.arcanum-hero
+.arcanum-profile__score,
+header.arcanum-hero
+.arcanum-profile__metrics-source-empty,
+header.arcanum-hero
+.arcanum-logo-placeholder {
+    display: none !important;
+}
+
+/* ----------------------------------------------------------
+   MÜNZEN & NOTEN ALS KOMPAKTE VIERTE KOPFSPALTE
+   ---------------------------------------------------------- */
+
+header.arcanum-hero
+> .arcanum-floating-grades {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+
+    position: static !important;
+    inset: auto !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+
+    align-self: stretch !important;
+
+    width: 17rem !important;
+    min-width: 17rem !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding:
+        0
+        0.1rem !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+
+    overflow: visible !important;
+}
+
+header.arcanum-hero
+.arcanum-floating-grades::before,
+header.arcanum-hero
+.arcanum-floating-grades::after {
+    content: none !important;
+    display: none !important;
+}
+
+header.arcanum-hero
+.arcanum-floating-grades__header {
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+header.arcanum-hero
+.arcanum-floating-grades__header h2 {
+    margin:
+        0
+        0
+        0.38rem !important;
+
+    color: var(--arc-text) !important;
+
+    font-size: 1.05rem !important;
+    line-height: 1.08 !important;
+    text-align: center !important;
+}
+
+header.arcanum-hero
+.arcanum-grade-scale--floating {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+
+    gap: 0.23rem !important;
+
+    width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+header.arcanum-hero
+.arcanum-grade-pill {
+    display: grid !important;
+
+    grid-template-columns:
+        4.1rem
+        minmax(0, 1fr) !important;
+
+    align-items: center !important;
+
+    gap: 0.25rem !important;
+
+    width: 100% !important;
+    min-height: 1.42rem !important;
+
+    margin: 0 !important;
+
+    padding:
+        0.14rem
+        0.38rem !important;
+
+    background:
+        rgba(255, 251, 242, 0.68) !important;
+
+    border:
+        0.06rem solid
+        rgba(128, 92, 33, 0.25) !important;
+
+    border-radius: 0.52rem !important;
+
+    box-shadow: none !important;
+
+    font-size: 0.69rem !important;
+    line-height: 1.04 !important;
+
+    overflow: hidden !important;
+}
+
+header.arcanum-hero
+.arcanum-grade-pill__coins {
+    min-width: 0 !important;
+
+    color: #805517 !important;
+
+    font-size: inherit !important;
+    font-weight: 900 !important;
+
+    white-space: nowrap !important;
+}
+
+header.arcanum-hero
+.arcanum-grade-pill__label {
+    min-width: 0 !important;
+
+    color: var(--arc-text) !important;
+
+    font-size: inherit !important;
+    font-weight: 750 !important;
+
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+}
+
+/* ----------------------------------------------------------
+   FACHKARTEN EXAKT AUF DEM BISHERIGEN TRANSPARENZSTAND
+   ---------------------------------------------------------- */
+
+.arcanum-subject-card,
+.arcanum-loading-card,
+.arcanum-task-dialog__panel {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 252, 242, 0.24),
+            rgba(239, 224, 184, 0.14)
+        ) !important;
+
+    border:
+        0.1rem solid
+        rgba(128, 91, 34, 0.48) !important;
+
+    box-shadow:
+        0 0.55rem 1.15rem
+        rgba(12, 22, 18, 0.13),
+        inset 0 0 0 0.04rem
+        rgba(255, 255, 255, 0.16) !important;
+
+    -webkit-backdrop-filter:
+        blur(3px)
+        saturate(102%) !important;
+
+    backdrop-filter:
+        blur(3px)
+        saturate(102%) !important;
+}
+
+/* ----------------------------------------------------------
+   RESPONSIVE ANORDNUNG
+   ---------------------------------------------------------- */
+
+@media (max-width: 1120px) {
+    header.arcanum-hero {
+        grid-template-columns: 1fr !important;
+    }
+
+    header.arcanum-hero
+    > .arcanum-floating-grades {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    header.arcanum-hero
+    .arcanum-grade-scale--floating {
+        grid-template-columns:
+            repeat(
+                5,
+                minmax(0, 1fr)
+            ) !important;
+    }
+
+    header.arcanum-hero
+    .arcanum-grade-pill {
+        grid-template-columns: 1fr !important;
+        text-align: center !important;
+    }
+}
+
+@media (max-width: 760px) {
+    header.arcanum-hero
+    > .arcanum-profile {
+        grid-template-columns:
+            5rem
+            minmax(0, 1fr) !important;
+    }
+
+    header.arcanum-hero
+    > .arcanum-profile
+    > .arcanum-avatar {
+        width: 4.7rem !important;
+        height: 4.7rem !important;
+        min-width: 4.7rem !important;
+        min-height: 4.7rem !important;
+    }
+
+    header.arcanum-hero
+    > .arcanum-profile
+    > .arcanum-profile__metrics {
+        grid-column: 1 / -1 !important;
+        grid-row: 2 !important;
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            ) !important;
+
+        margin-top: 0.5rem !important;
+    }
+
+    header.arcanum-hero
+    .arcanum-profile__metric-card
+    + .arcanum-profile__metric-card {
+        border-top: 0 !important;
+
+        border-left:
+            0.07rem solid
+            rgba(128, 92, 33, 0.3) !important;
+    }
+
+    header.arcanum-hero
+    .arcanum-grade-scale--floating {
+        grid-template-columns: 1fr !important;
+    }
+
+    header.arcanum-hero
+    .arcanum-grade-pill {
+        grid-template-columns:
+            4.1rem
+            minmax(0, 1fr) !important;
+
+        text-align: left !important;
+    }
+}
+
+/* arcanum-dashboard-refinement-v7:end */
+
+
+
+/* arcanum-subject-fonts-v10:start */
+
+/*
+ * Feinschliff:
+ * - kleine Texte auf Fachkarten nochmals leicht größer
+ * - Münzplakette besser ausbalanciert
+ * - Zahl und "MÜNZEN" etwas weiter weg vom rechten Rand
+ */
+
+.arcanum-subject-card .arcanum-subject-card__title h3 {
+    font-size: clamp(1.9rem, 2.28vw, 2.32rem) !important;
+    line-height: 1.08 !important;
+}
+
+.arcanum-subject-card .arcanum-subject-card__title p {
+    font-size: 1.06rem !important;
+    line-height: 1.38 !important;
+}
+
+/* Fortschritt */
+
+.arcanum-subject-card .arcanum-progress__labels span,
+.arcanum-subject-card .arcanum-progress__label,
+.arcanum-subject-card .arcanum-progress-label {
+    font-size: 0.98rem !important;
+    line-height: 1.26 !important;
+    font-weight: 720 !important;
+}
+
+.arcanum-subject-card .arcanum-progress__labels strong {
+    font-size: 0.98rem !important;
+    line-height: 1.26 !important;
+}
+
+/* rechte kleine Münz-Info */
+
+.arcanum-subject-card .arcanum-coin-note,
+.arcanum-subject-card .arcanum-coins-to-next-grade,
+.arcanum-subject-card .arcanum-next-grade-hint {
+    font-size: 0.98rem !important;
+    line-height: 1.28 !important;
+    font-weight: 680 !important;
+}
+
+/* Aktuelle Bewertung */
+
+.arcanum-subject-card .arcanum-current-grade__label {
+    font-size: 0.92rem !important;
+    line-height: 1.2 !important;
+    font-weight: 820 !important;
+}
+
+.arcanum-subject-card .arcanum-current-grade__value {
+    font-size: 1.08rem !important;
+    line-height: 1.2 !important;
+    font-weight: 770 !important;
+}
+
+/* Aktionen */
+
+.arcanum-subject-card .arcanum-subject-actions__overline {
+    font-size: 0.88rem !important;
+    line-height: 1.18 !important;
+    font-weight: 820 !important;
+}
+
+.arcanum-subject-card .arcanum-subject-actions__heading strong {
+    font-size: 1.12rem !important;
+    line-height: 1.24 !important;
+}
+
+.arcanum-subject-card .arcanum-request-button__label,
+.arcanum-subject-card [data-subject-request] .label,
+.arcanum-subject-card button[data-subject-request] .label {
+    font-size: 1.1rem !important;
+    line-height: 1.22 !important;
+    font-weight: 760 !important;
+}
+
+.arcanum-subject-card .arcanum-request-button__status,
+.arcanum-subject-card [data-request-status] {
+    font-size: 0.82rem !important;
+    line-height: 1.08 !important;
+    font-weight: 760 !important;
+    padding: 0.16rem 0.5rem !important;
+    min-width: 4.1rem !important;
+}
+
+.arcanum-subject-card .arcanum-subject-actions__instruction,
+.arcanum-subject-card .arcanum-subject-actions__message {
+    font-size: 0.89rem !important;
+    line-height: 1.34 !important;
+}
+
+/* Untere Karten: Offen / Aktuell / Bestanden / Gesperrt */
+
+.arcanum-subject-card .arcanum-subject-stat-button__label {
+    font-size: 0.88rem !important;
+    line-height: 1.18 !important;
+    font-weight: 820 !important;
+}
+
+.arcanum-subject-card .arcanum-subject-stat-button__value {
+    font-size: 1.1rem !important;
+    line-height: 1.24 !important;
+    font-weight: 780 !important;
+}
+
+.arcanum-subject-card .arcanum-subject-stat-button__action {
+    font-size: 0.88rem !important;
+    line-height: 1.24 !important;
+    font-weight: 680 !important;
+}
+
+/* Münzplakette */
+
+.arcanum-subject-card .arcanum-coin-badge {
+    padding-left: 3.1rem !important;
+    padding-right: 1.25rem !important;
+}
+
+.arcanum-subject-card .arcanum-coin-badge strong {
+    font-size: 2.02rem !important;
+    line-height: 1 !important;
+    display: inline-block !important;
+    transform: translateX(-0.38rem) !important;
+}
+
+.arcanum-subject-card .arcanum-coin-badge span {
+    font-size: 0.88rem !important;
+    line-height: 1.08 !important;
+    font-weight: 770 !important;
+    display: inline-block !important;
+    transform: translateX(-0.38rem) !important;
+}
+
+/* Etwas mehr Luft */
+
+.arcanum-subject-card .arcanum-subject-stat-button {
+    min-height: 5.05rem !important;
+}
+
+.arcanum-subject-card .arcanum-request-button,
+.arcanum-subject-card button[data-subject-request],
+.arcanum-subject-card .arcanum-subject-actions button {
+    min-height: 6.85rem !important;
+}
+
+@media (max-width: 900px) {
+    .arcanum-subject-card .arcanum-subject-card__title h3 {
+        font-size: 1.76rem !important;
+    }
+
+    .arcanum-subject-card .arcanum-subject-card__title p {
+        font-size: 0.99rem !important;
+    }
+
+    .arcanum-subject-card .arcanum-request-button__label {
+        font-size: 1rem !important;
+    }
+}
+
+/* arcanum-subject-fonts-v10:end */
+
+
+
+/* arcanum-coin-badge-v11:start */
+
+/*
+ * Feintuning nur für die Münzplakette rechts oben auf den Fachkarten:
+ * - Zahl und "MÜNZEN" weiter nach links
+ * - mehr Innenabstand rechts
+ * - optisch mittiger im Badge
+ */
+
+.arcanum-subject-card .arcanum-coin-badge {
+    padding-left: 3.1rem !important;
+    padding-right: 1.55rem !important;
+    min-width: 8.2rem !important;
+}
+
+.arcanum-subject-card .arcanum-coin-badge::before {
+    left: 0.46rem !important;
+}
+
+.arcanum-subject-card .arcanum-coin-badge strong {
+    display: inline-block !important;
+    transform: translateX(-0.72rem) !important;
+    text-align: left !important;
+}
+
+.arcanum-subject-card .arcanum-coin-badge span {
+    display: inline-block !important;
+    transform: translateX(-0.72rem) !important;
+    text-align: left !important;
+}
+
+/* arcanum-coin-badge-v11:end */
+
+
+
+/* arcanum-subject-small-text-v12:start */
+
+/*
+ * Letzter gezielter Schrift-Feinschliff:
+ * Hinweis zur nächsten Note und Aktionslinks der Statusfelder.
+ */
+
+/* „15 Münzen bis Note 4“ und entsprechende Hinweise */
+
+.arcanum-subject-card
+.arcanum-progress__labels strong {
+    color: #26372e !important;
+
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    line-height: 1.25 !important;
+
+    opacity: 1 !important;
+    white-space: normal !important;
+}
+
+/* „Anzeigen“, „Anzeigen und beginnen“, „Münzen anzeigen“ */
+
+.arcanum-subject-card
+.arcanum-subject-stat-button__action {
+    display: block !important;
+
+    margin-top: 0.16rem !important;
+
+    font-size: 0.94rem !important;
+    font-weight: 720 !important;
+    line-height: 1.22 !important;
+
+    opacity: 1 !important;
+}
+
+/* Normale offene und aktuelle Etappen */
+
+.arcanum-subject-card
+.arcanum-subject-stat-button:not(
+    .arcanum-subject-stat-button--completed
+):not(
+    .arcanum-subject-stat-button--locked
+)
+.arcanum-subject-stat-button__action {
+    color: #694716 !important;
+}
+
+/* Bestandene Etappen */
+
+.arcanum-subject-card
+.arcanum-subject-stat-button--completed
+.arcanum-subject-stat-button__action {
+    color: #286439 !important;
+}
+
+/* Gesperrte Etappen weiterhin gedämpft, aber gut lesbar */
+
+.arcanum-subject-card
+.arcanum-subject-stat-button--locked
+.arcanum-subject-stat-button__action {
+    color: #4e5b54 !important;
+}
+
+/* Etwas Luft für zweizeilige Links */
+
+.arcanum-subject-card
+.arcanum-subject-stat-button {
+    padding:
+        0.82rem
+        0.92rem !important;
+
+    min-height: 5.15rem !important;
+}
+
+/* arcanum-subject-small-text-v12:end */
+

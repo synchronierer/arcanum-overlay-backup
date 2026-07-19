@@ -313,5 +313,32 @@
     ],
     "context": "imgs",
     "access_level": "public"
+  },
+  "/arcanum-student-theme.css": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "user"
+    ],
+    "context": "css",
+    "access_level": "student"
+  },
+  "/arcanum-dashboard-background.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-neutral-avatar.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
   }
 }
