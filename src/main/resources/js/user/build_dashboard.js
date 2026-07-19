@@ -48,6 +48,7 @@ function renderStudentProfile(studentData) {
         graduationLabel(studentData?.graduationLevel)
     );
     setText("student-initials", createInitials(firstName, lastName));
+    initialiseAvatarSelector(studentData);
 
     const completedTasks = safeArray(studentData?.completedTasks);
     setText(
@@ -2530,3 +2531,237 @@ installArcanumStudentDashboardLoadHook();
         installProfileMetricsLayout();
     }
 })();
+
+/* arcanum-avatar-selector-v1 */
+const ARCANUM_AVATARS = [
+    "/arcanum-avatar-01.png",
+    "/arcanum-avatar-02.png",
+    "/arcanum-avatar-03.png",
+    "/arcanum-avatar-04.png",
+    "/arcanum-avatar-05.png",
+    "/arcanum-avatar-06.png",
+    "/arcanum-avatar-07.png",
+    "/arcanum-avatar-08.png",
+    "/arcanum-avatar-09.png",
+    "/arcanum-avatar-10.png",
+    "/arcanum-avatar-11.png",
+    "/arcanum-avatar-12.png",
+    "/arcanum-avatar-13.png",
+    "/arcanum-avatar-14.png",
+    "/arcanum-avatar-15.png",
+    "/arcanum-avatar-16.png",
+    "/arcanum-avatar-17.png",
+    "/arcanum-avatar-18.png",
+    "/arcanum-avatar-19.png",
+    "/arcanum-avatar-20.png",
+    "/arcanum-avatar-21.png",
+    "/arcanum-avatar-22.png",
+    "/arcanum-avatar-23.png",
+    "/arcanum-avatar-24.png",
+    "/arcanum-avatar-25.png",
+    "/arcanum-avatar-26.png",
+    "/arcanum-avatar-27.png",
+    "/arcanum-avatar-28.png",
+    "/arcanum-avatar-29.png",
+    "/arcanum-avatar-30.png",
+    "/arcanum-avatar-31.png",
+    "/arcanum-avatar-32.png",
+    "/arcanum-avatar-33.png",
+    "/arcanum-avatar-34.png",
+    "/arcanum-avatar-35.png",
+    "/arcanum-avatar-36.png",
+    "/arcanum-avatar-37.png",
+    "/arcanum-avatar-38.png",
+    "/arcanum-avatar-39.png",
+    "/arcanum-avatar-40.png",
+    "/arcanum-avatar-41.png",
+    "/arcanum-avatar-42.png",
+    "/arcanum-avatar-43.png",
+    "/arcanum-avatar-44.png",
+    "/arcanum-avatar-45.png",
+    "/arcanum-avatar-46.png",
+    "/arcanum-avatar-47.png",
+    "/arcanum-avatar-48.png"
+];
+
+let arcanumAvatarStudentId = null;
+let arcanumSelectedAvatar = null;
+
+function initialiseAvatarSelector(studentData) {
+    const button = document.getElementById("avatar-button");
+    const studentId = extractEntityId(studentData?.id);
+
+    if (!button || studentId === null) {
+        return;
+    }
+
+    arcanumAvatarStudentId = studentId;
+    button.disabled = false;
+    button.removeAttribute("title");
+
+    const storageKey = getAvatarStorageKey(studentId);
+    const storedAvatar = window.localStorage.getItem(storageKey);
+
+    if (storedAvatar && ARCANUM_AVATARS.includes(storedAvatar)) {
+        arcanumSelectedAvatar = storedAvatar;
+        applyAvatarToProfile(storedAvatar);
+    }
+
+    if (button.dataset.avatarSelectorBound !== "true") {
+        button.dataset.avatarSelectorBound = "true";
+        button.addEventListener("click", openAvatarSelector);
+    }
+}
+
+function getAvatarStorageKey(studentId) {
+    return `arcanum-avatar:student:${studentId}`;
+}
+
+function applyAvatarToProfile(avatarPath) {
+    const avatar = document.getElementById("student-avatar");
+    const initials = document.getElementById("student-initials");
+
+    if (!avatar) {
+        return;
+    }
+
+    avatar.style.setProperty(
+        "background-image",
+        `url("${avatarPath}")`,
+        "important"
+    );
+    avatar.style.setProperty("background-size", "cover", "important");
+    avatar.style.setProperty(
+        "background-position",
+        "center",
+        "important"
+    );
+    avatar.classList.add("has-selected-avatar");
+
+    if (initials) {
+        initials.hidden = true;
+    }
+}
+
+function openAvatarSelector() {
+    const dialog = ensureAvatarSelectorDialog();
+    updateAvatarSelection(dialog);
+
+    if (typeof dialog.showModal === "function") {
+        if (!dialog.open) {
+            dialog.showModal();
+        }
+    } else {
+        dialog.setAttribute("open", "");
+    }
+}
+
+function ensureAvatarSelectorDialog() {
+    let dialog = document.getElementById("arcanum-avatar-dialog");
+
+    if (dialog) {
+        return dialog;
+    }
+
+    dialog = document.createElement("dialog");
+    dialog.id = "arcanum-avatar-dialog";
+    dialog.className = "arcanum-avatar-dialog";
+    dialog.setAttribute("aria-labelledby", "arcanum-avatar-dialog-title");
+
+    const avatarButtons = ARCANUM_AVATARS.map((avatarPath, index) => `
+        <button
+            type="button"
+            class="arcanum-avatar-choice"
+            data-avatar-path="${escapeHtml(avatarPath)}"
+            aria-label="Avatar ${index + 1} auswählen"
+        >
+            <img
+                src="${escapeHtml(avatarPath)}"
+                alt=""
+                loading="lazy"
+                draggable="false"
+            >
+            <span aria-hidden="true">&#10003;</span>
+        </button>
+    `).join("");
+
+    dialog.innerHTML = `
+        <div class="arcanum-avatar-dialog__panel">
+            <header class="arcanum-avatar-dialog__header">
+                <div>
+                    <span class="arcanum-avatar-dialog__overline">
+                        Basiscamp Arcanum
+                    </span>
+                    <h2 id="arcanum-avatar-dialog-title">
+                        Wähle deinen Avatar
+                    </h2>
+                    <p>
+                        Tippe auf ein Gesicht. Die Auswahl wird sofort
+                        in deinem Profil angezeigt.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="arcanum-avatar-dialog__close"
+                    data-avatar-dialog-close
+                    aria-label="Avatar-Auswahl schließen"
+                >
+                    &times;
+                </button>
+            </header>
+
+            <div class="arcanum-avatar-dialog__grid">
+                ${avatarButtons}
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(dialog);
+
+    dialog.querySelector("[data-avatar-dialog-close]")
+        ?.addEventListener("click", () => dialog.close());
+
+    dialog.addEventListener("click", event => {
+        if (event.target === dialog) {
+            dialog.close();
+            return;
+        }
+
+        const choice = event.target.closest("[data-avatar-path]");
+        if (!choice) {
+            return;
+        }
+
+        const avatarPath = choice.dataset.avatarPath;
+        if (!ARCANUM_AVATARS.includes(avatarPath)) {
+            return;
+        }
+
+        arcanumSelectedAvatar = avatarPath;
+        applyAvatarToProfile(avatarPath);
+
+        if (arcanumAvatarStudentId !== null) {
+            window.localStorage.setItem(
+                getAvatarStorageKey(arcanumAvatarStudentId),
+                avatarPath
+            );
+        }
+
+        updateAvatarSelection(dialog);
+        window.setTimeout(() => dialog.close(), 140);
+    });
+
+    return dialog;
+}
+
+function updateAvatarSelection(dialog) {
+    dialog.querySelectorAll("[data-avatar-path]").forEach(choice => {
+        const selected =
+            choice.dataset.avatarPath === arcanumSelectedAvatar;
+
+        choice.classList.toggle("is-selected", selected);
+        choice.setAttribute("aria-pressed", String(selected));
+    });
+}
+/* /arcanum-avatar-selector-v1 */

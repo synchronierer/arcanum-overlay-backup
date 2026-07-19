@@ -340,5 +340,437 @@
     ],
     "context": "imgs",
     "access_level": "public"
+  },
+  "/arcanum-avatar-01.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-02.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-03.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-04.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-05.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-06.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-07.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-08.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-09.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-10.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-11.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-12.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-13.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-14.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-15.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-16.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-17.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-18.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-19.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-20.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-21.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-22.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-23.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-24.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-25.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-26.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-27.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-28.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-29.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-30.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-31.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-32.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-33.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-34.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-35.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-36.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-37.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-38.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-39.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-40.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-41.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-42.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-43.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-44.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-45.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-46.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-47.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  },
+  "/arcanum-avatar-48.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "dashboard"
+    ],
+    "context": "imgs",
+    "access_level": "public"
   }
 }
