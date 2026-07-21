@@ -30,3 +30,9 @@ replay_pid*
 # build dir
 build
 bin
+
+# Lokale Arcanum-Sicherungsordner
+.avatar-extension-backup-*/
+.avatar-route-repair-*/
+.avatar-selector-backup-*/
+.logout-page-backup-*/

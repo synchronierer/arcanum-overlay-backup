@@ -2533,6 +2533,8 @@ installArcanumStudentDashboardLoadHook();
 })();
 
 /* arcanum-avatar-selector-v1 */
+const ARCANUM_AVATAR_ASSET_VERSION = "20260720-2";
+
 const ARCANUM_AVATARS = [
     "/arcanum-avatar-01.png",
     "/arcanum-avatar-02.png",
@@ -2581,7 +2583,19 @@ const ARCANUM_AVATARS = [
     "/arcanum-avatar-45.png",
     "/arcanum-avatar-46.png",
     "/arcanum-avatar-47.png",
-    "/arcanum-avatar-48.png"
+    "/arcanum-avatar-48.png",
+    "/arcanum-avatar-49.png",
+    "/arcanum-avatar-50.png",
+    "/arcanum-avatar-51.png",
+    "/arcanum-avatar-52.png",
+    "/arcanum-avatar-53.png",
+    "/arcanum-avatar-54.png",
+    "/arcanum-avatar-55.png",
+    "/arcanum-avatar-56.png",
+    "/arcanum-avatar-57.png",
+    "/arcanum-avatar-58.png",
+    "/arcanum-avatar-59.png",
+    "/arcanum-avatar-60.png"
 ];
 
 let arcanumAvatarStudentId = null;
@@ -2627,7 +2641,7 @@ function applyAvatarToProfile(avatarPath) {
 
     avatar.style.setProperty(
         "background-image",
-        `url("${avatarPath}")`,
+        `url("${avatarPath}?v=${ARCANUM_AVATAR_ASSET_VERSION}")`,
         "important"
     );
     avatar.style.setProperty("background-size", "cover", "important");
@@ -2676,9 +2690,8 @@ function ensureAvatarSelectorDialog() {
             aria-label="Avatar ${index + 1} auswählen"
         >
             <img
-                src="${escapeHtml(avatarPath)}"
+                src="${escapeHtml(avatarPath)}?v=${ARCANUM_AVATAR_ASSET_VERSION}"
                 alt=""
-                loading="lazy"
                 draggable="false"
             >
             <span aria-hidden="true">&#10003;</span>
