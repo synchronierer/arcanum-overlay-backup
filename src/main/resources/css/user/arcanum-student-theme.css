@@ -2797,3 +2797,114 @@ header.arcanum-hero
     }
 }
 /* /arcanum-avatar-selector-v1 */
+
+/* arcanum-readability-v1:start */
+
+/*
+ * Höhere Flächendeckung für unterschiedliche Displays.
+ * Die Hintergrundlandschaft bleibt sichtbar, wichtige Inhalte
+ * erhalten aber einen deutlich stabileren Kontrast.
+ */
+
+:root {
+    --arc-cream: rgba(255, 250, 240, 0.90);
+    --arc-cream-strong: rgba(255, 251, 243, 0.95);
+    --arc-cream-soft: rgba(248, 239, 214, 0.86);
+}
+
+/* Gemeinsamer äußerer Kopfbereich */
+header.arcanum-hero {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 252, 242, 0.88),
+            rgba(239, 224, 184, 0.82)
+        ) !important;
+
+    border-color: rgba(128, 91, 34, 0.68) !important;
+
+    box-shadow:
+        0 0.65rem 1.45rem rgba(12, 22, 18, 0.22),
+        inset 0 0 0 0.05rem rgba(255, 255, 255, 0.42) !important;
+
+    -webkit-backdrop-filter:
+        blur(7px)
+        saturate(108%) !important;
+
+    backdrop-filter:
+        blur(7px)
+        saturate(108%) !important;
+}
+
+/* Profilinformationen */
+.arcanum-profile__identity-main,
+.arcanum-profile__identity:not(
+    :has(> .arcanum-profile__identity-main)
+) {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 252, 242, 0.92),
+            rgba(239, 224, 184, 0.86)
+        ) !important;
+
+    border-color: rgba(128, 91, 34, 0.66) !important;
+}
+
+/* Gesamtmünzen und Notenskala */
+.arcanum-floating-grades {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 252, 242, 0.92),
+            rgba(239, 224, 184, 0.86)
+        ) !important;
+
+    border-color: rgba(128, 91, 34, 0.66) !important;
+}
+
+/* Fachkarten und Fachdialoge */
+.arcanum-subject-card,
+.arcanum-loading-card,
+.arcanum-task-dialog__panel {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 252, 242, 0.90),
+            rgba(239, 224, 184, 0.84)
+        ) !important;
+
+    border-color: rgba(128, 91, 34, 0.68) !important;
+
+    box-shadow:
+        0 0.7rem 1.5rem rgba(12, 22, 18, 0.22),
+        inset 0 0 0 0.05rem rgba(255, 255, 255, 0.38) !important;
+
+    -webkit-backdrop-filter:
+        blur(6px)
+        saturate(106%) !important;
+
+    backdrop-filter:
+        blur(6px)
+        saturate(106%) !important;
+}
+
+/* Kleine Informationsfelder im Profil */
+header.arcanum-hero
+.arcanum-profile__details > span,
+header.arcanum-hero
+.arcanum-profile__details > div,
+header.arcanum-hero
+.arcanum-profile__email {
+    background: rgba(255, 252, 244, 0.90) !important;
+    border-color: rgba(128, 92, 33, 0.42) !important;
+}
+
+/* Einzelne Notenzeilen */
+.arcanum-grade-pill,
+header.arcanum-hero .arcanum-grade-pill {
+    background: rgba(255, 251, 242, 0.92) !important;
+    border-color: rgba(128, 92, 33, 0.38) !important;
+}
+
+/* arcanum-readability-v1:end */
