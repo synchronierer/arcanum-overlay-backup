@@ -1746,6 +1746,7 @@ function calculateTaskCoins(task) {
      */
 
     const explicitCoins = Number(
+        task?.tokens ??
         task?.coins ??
         task?.coinValue ??
         task?.muenzen

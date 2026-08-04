@@ -2424,3 +2424,54 @@ select {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ARCANUM READABILITY OVERRIDE 2026-08 */
+.arcanum-task-row__coins,
+.arcanum-task-group__coins,
+.arcanum-task-group__count,
+.arcanum-task-group__meta,
+.arcanum-task-group__summary,
+.arcanum-stage-card__coins,
+.arcanum-stage-card__meta {
+    color: #5a4328 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 1.35 !important;
+    letter-spacing: 0.01em;
+}
+
+
+/* ARCANUM READABILITY OVERRIDE 2026-08 META-2 */
+/* Rechte Meta-Angaben im Etappenfenster besser lesbar */
+.arcanum-task-group__count,
+.arcanum-task-group__coins,
+.arcanum-task-group__meta,
+.arcanum-task-group__summary,
+.arcanum-topic-group__count,
+.arcanum-topic-group__coins,
+.arcanum-topic-group__meta,
+.arcanum-topic-group__summary {
+    color: #6b4a24 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    line-height: 1.35 !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+
+/* ARCANUM EXACT TASK GROUP SUMMARY FIX 2026-08 */
+.arcanum-task-group__summary > span,
+.arcanum-task-group__summary > strong {
+    color: #5a4328 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+.arcanum-task-group__summary > strong {
+    margin-top: 3px !important;
+}
