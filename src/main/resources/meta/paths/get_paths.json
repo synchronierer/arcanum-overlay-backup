@@ -917,4 +917,14 @@
     "context": "imgs",
     "access_level": "public"
   }
+,
+  "/arcanum-schatzkammer-tuer.png": {
+    "type": "GET",
+    "handler_type": "FileRequestHandler",
+    "namespaces": [
+      "login"
+    ],
+    "context": "imgs",
+    "access_level": "public"
+  }
 }
