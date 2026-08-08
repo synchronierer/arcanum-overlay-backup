@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+print_status() {
+    echo
+    echo "===== Abschlussstatus ====="
+    git status --short --branch
+}
+trap print_status EXIT
+
+echo "===== Git-Diff prüfen ====="
+git diff --check
+git diff --cached --check
+
+echo
+echo "===== Build und Tests ====="
+scripts/build-project

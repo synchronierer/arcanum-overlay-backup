@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+# Codex runs with repository-scoped write access. Keep Gradle's writable cache
+# inside the ignored project-local .gradle directory unless callers explicitly
+# provide another location.
+export GRADLE_USER_HOME="${GRADLE_USER_HOME:-$ROOT/.gradle/codex-user-home}"
+
+BACKEND_JAR="${STUDENT_DATABASE_JAR:-}"
+DEFAULT_BACKEND_JAR="$HOME/learn-monitor-arcanum-neu/runtime-original/sandbox/student-database.jar"
+
+if [[ -z "$BACKEND_JAR" && -f "$DEFAULT_BACKEND_JAR" ]]; then
+    BACKEND_JAR="$DEFAULT_BACKEND_JAR"
+fi
+
+GRADLE_ARGS=(clean build --no-configuration-cache)
+
+if [[ -n "$BACKEND_JAR" ]]; then
+    if [[ ! -f "$BACKEND_JAR" ]]; then
+        echo "Fehler: student-database.jar nicht gefunden: $BACKEND_JAR"
+        exit 1
+    fi
+    GRADLE_ARGS+=("-PstudentDatabaseJar=$BACKEND_JAR")
+fi
+
+./gradlew "${GRADLE_ARGS[@]}"

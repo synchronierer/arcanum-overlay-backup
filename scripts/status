@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+echo "===== Repository ====="
+printf 'Pfad:   %s\n' "$ROOT"
+printf 'Branch: %s\n' "$(git branch --show-current)"
+echo
+echo "===== Remotes ====="
+git remote -v
+echo
+echo "===== Arbeitsstand ====="
+git status --short --branch
+echo
+echo "===== Letzter Commit ====="
+git log -1 --show-signature --oneline

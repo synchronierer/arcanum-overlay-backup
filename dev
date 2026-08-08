@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$PROJECT_DIR" || exit 1
+
+for command in git codex; do
+    if ! command -v "$command" >/dev/null 2>&1; then
+        echo "Fehler: '$command' ist nicht installiert oder nicht im PATH."
+        exit 1
+    fi
+done
+
+CODEX_UI_ARGS=()
+if codex --help 2>&1 | grep -q -- '--no-alt-screen'; then
+    CODEX_UI_ARGS+=(--no-alt-screen)
+fi
+
+start_new_codex() {
+    codex \
+        "${CODEX_UI_ARGS[@]}" \
+        --sandbox workspace-write \
+        --ask-for-approval never
+}
+
+resume_codex() {
+    codex \
+        "${CODEX_UI_ARGS[@]}" \
+        --sandbox workspace-write \
+        --ask-for-approval never \
+        resume
+}
+
+review_codex() {
+    codex \
+        "${CODEX_UI_ARGS[@]}" \
+        --sandbox read-only \
+        --ask-for-approval never
+}
+
+while true; do
+    echo
+    echo "======================================"
+    echo " Arcanum Codex"
+    echo "======================================"
+    echo
+    git status -sb || true
+    echo
+    echo "1) Neue Codex-Sitzung"
+    echo "2) Projekt-Sitzung fortsetzen"
+    echo "3) Nur lesende Analyse"
+    echo "4) Shell öffnen"
+    echo "5) Beenden"
+    echo
+
+    read -rp "Auswahl: " choice
+
+    case "$choice" in
+        1)
+            start_new_codex || true
+            ;;
+        2)
+            resume_codex || true
+            ;;
+        3)
+            review_codex || true
+            ;;
+        4)
+            bash -l
+            ;;
+        5)
+            exit 0
+            ;;
+        *)
+            echo "Ungültige Auswahl."
+            ;;
+    esac
+done
