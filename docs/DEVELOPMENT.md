@@ -64,3 +64,14 @@ The runner creates an isolated `codex/<sprint-id>` branch, runs Codex
 non-interactively, repeats the project checks outside the Codex sandbox,
 creates a signed report commit, and pushes only that sprint branch. Merge and
 deployment remain separate approval steps.
+
+## Runner safety behavior
+
+The sprint runner verifies the repository remote and accepts only the explicitly
+approved base branch for that repository. It blocks common secret, credential,
+database, key, runtime, Gradle-output, build-output, and symlink additions
+before committing.
+
+After a successful normal sprint it returns to the approved base branch. During
+the one-time `--bootstrap` run it remains on the sprint branch until that
+workflow PR has been reviewed and merged.

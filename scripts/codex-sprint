@@ -42,22 +42,33 @@ SLUG="$(
     tr '[:upper:]' '[:lower:]'
 )"
 BRANCH="codex/$SLUG"
-BASE_BRANCH="$(git branch --show-current)"
 REMOTE_NAME="backup"
 
-if [[ -z "$BASE_BRANCH" ]]; then
-    echo "Fehler: Detached HEAD ist nicht zulässig."
-    exit 1
-fi
-
-if [[ "$BASE_BRANCH" == codex/* ]]; then
-    echo "Fehler: Der Runner muss auf dem freigegebenen Arbeitsbranch gestartet werden."
-    echo "Aktueller Branch: $BASE_BRANCH"
-    exit 1
-fi
-
-if ! git remote get-url "$REMOTE_NAME" >/dev/null 2>&1; then
+if ! REMOTE_URL="$(git remote get-url "$REMOTE_NAME" 2>/dev/null)"; then
     echo "Fehler: Git-Remote '$REMOTE_NAME' fehlt."
+    exit 1
+fi
+
+case "$REMOTE_URL" in
+    *synchronierer/arcanum-overlay-backup.git)
+        EXPECTED_BASE_BRANCH="frontend-arcanum-neustart"
+        ;;
+    *synchronierer/results-plugin.git)
+        EXPECTED_BASE_BRANCH="fix/student-config-fallback"
+        ;;
+    *)
+        echo "Fehler: Unbekanntes oder nicht freigegebenes GitHub-Repository."
+        echo "Remote: $REMOTE_URL"
+        exit 1
+        ;;
+esac
+
+BASE_BRANCH="$(git branch --show-current)"
+
+if [[ "$BASE_BRANCH" != "$EXPECTED_BASE_BRANCH" ]]; then
+    echo "Fehler: Der Runner wurde nicht auf dem freigegebenen Basisbranch gestartet."
+    echo "Erwartet: $EXPECTED_BASE_BRANCH"
+    echo "Aktuell:  ${BASE_BRANCH:-DETACHED}"
     exit 1
 fi
 
@@ -193,39 +204,116 @@ set -e
 git add -A
 
 python3 - <<'PY'
+from pathlib import PurePosixPath
+import re
 import subprocess
 
 forbidden_parts = {
-    ".env",
-    "database.db",
+    ".gradle",
+    "build",
     "runtime",
     "runtime-original",
     "backup",
     "backups",
     "keys",
+    "secrets",
+    "credentials",
 }
-forbidden_suffixes = (".db", ".jks", ".key", ".pem", ".p12", ".pfx")
+forbidden_names = {
+    "credentials.json",
+    "credentials.yml",
+    "credentials.yaml",
+    "secrets.json",
+    "secrets.yml",
+    "secrets.yaml",
+    "id_rsa",
+    "id_ed25519",
+}
+forbidden_suffixes = (
+    ".db",
+    ".sqlite",
+    ".sqlite3",
+    ".jks",
+    ".key",
+    ".pem",
+    ".p12",
+    ".pfx",
+    ".keystore",
+    ".kdbx",
+)
+secret_patterns = (
+    re.compile(rb"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
+    re.compile(rb"\bgh[pousr]_[A-Za-z0-9_]{20,}\b"),
+    re.compile(rb"\bAKIA[0-9A-Z]{16}\b"),
+    re.compile(rb"\bAIza[0-9A-Za-z_-]{35}\b"),
+    re.compile(rb"\bxox[baprs]-[A-Za-z0-9-]{20,}\b"),
+)
 
 raw = subprocess.check_output(
     ["git", "diff", "--cached", "--name-only", "-z"]
 )
 
-bad = []
+bad_paths = []
+bad_content = []
+bad_symlinks = []
+
 for item in raw.split(b"\0"):
     if not item:
         continue
+
     path = item.decode("utf-8", errors="surrogateescape")
-    parts = set(path.split("/"))
-    name = path.rsplit("/", 1)[-1]
+    posix = PurePosixPath(path)
+    lower_parts = {part.lower() for part in posix.parts}
+    name = posix.name.lower()
 
-    if parts & forbidden_parts:
-        bad.append(path)
-    elif name.endswith(forbidden_suffixes):
-        bad.append(path)
+    if (
+        lower_parts & forbidden_parts
+        or name in forbidden_names
+        or name == ".env"
+        or name.startswith(".env.")
+        or name.endswith(forbidden_suffixes)
+    ):
+        bad_paths.append(path)
+        continue
 
-if bad:
-    print("ABBRUCH: Verbotene oder sensible Dateien sind vorgemerkt:")
-    print("\n".join(sorted(set(bad))))
+    staged = subprocess.run(
+        ["git", "ls-files", "--stage", "--", path],
+        text=True,
+        capture_output=True,
+        check=True,
+    ).stdout.strip()
+
+    if not staged:
+        # Deleted file.
+        continue
+
+    mode = staged.split(maxsplit=1)[0]
+    if mode == "120000":
+        bad_symlinks.append(path)
+        continue
+
+    blob = subprocess.run(
+        ["git", "show", f":{path}"],
+        capture_output=True,
+        check=True,
+    ).stdout
+
+    if len(blob) > 2_000_000 or b"\0" in blob:
+        continue
+
+    if any(pattern.search(blob) for pattern in secret_patterns):
+        bad_content.append(path)
+
+if bad_paths or bad_symlinks or bad_content:
+    if bad_paths:
+        print("ABBRUCH: Verbotene oder sensible Pfade sind vorgemerkt:")
+        print("\n".join(sorted(set(bad_paths))))
+    if bad_symlinks:
+        print("ABBRUCH: Neue oder geänderte Symlinks sind nicht zulässig:")
+        print("\n".join(sorted(set(bad_symlinks))))
+    if bad_content:
+        print("ABBRUCH: Mögliche Geheimnisse wurden in Dateien erkannt:")
+        print("\n".join(sorted(set(bad_content))))
     raise SystemExit(1)
 PY
 
@@ -266,8 +354,12 @@ fi
     tail -n 160 "$CHECK_LOG"
 } > "$REPORT_FILE"
 
-git commit -S -F "$REPORT_FILE"
+git commit --allow-empty -S -F "$REPORT_FILE"
 git push -u "$REMOTE_NAME" "HEAD:$BRANCH"
+
+if [[ "$BOOTSTRAP" == false ]]; then
+    git switch "$BASE_BRANCH"
+fi
 
 echo
 echo "============================================================"
@@ -275,8 +367,9 @@ echo "SPRINT AUF GITHUB ÜBERGEBEN"
 echo "============================================================"
 echo "Sprint: $SPRINT_ID"
 echo "Branch: $BRANCH"
-echo "Commit: $(git rev-parse HEAD)"
+echo "Commit: $(git rev-parse "$BRANCH")"
 echo "Codex-Exitcode: $CODEX_EXIT"
 echo "Post-Check-Exitcode: $CHECK_EXIT"
+echo "Lokaler Branch: $(git branch --show-current)"
 echo
 echo "Im Chat genügt jetzt: Sprint $SPRINT_ID fertig"
