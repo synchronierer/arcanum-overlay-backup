@@ -2908,3 +2908,50 @@ header.arcanum-hero .arcanum-grade-pill {
 }
 
 /* arcanum-readability-v1:end */
+
+/* arcanum-partner-contrast-fix-v1
+   Partneranzeige auf hellem Arcanum-Panel lesbar machen.
+   Bewusst nur auf den Partnerbereich begrenzt. */
+
+.arcanum-partner-results {
+    border-top-color: rgba(128, 92, 33, 0.28) !important;
+    color: var(--arc-text) !important;
+}
+
+.arcanum-partner-results__overline {
+    color: #765322 !important;
+}
+
+.arcanum-partner-results__header strong {
+    color: var(--arc-text) !important;
+}
+
+.arcanum-partner-results__topic {
+    color: var(--arc-text-soft) !important;
+}
+
+.arcanum-partner-results__status {
+    padding: 0.8rem 0.9rem !important;
+    border-color: rgba(128, 92, 33, 0.34) !important;
+    color: var(--arc-text) !important;
+    background: rgba(255, 251, 242, 0.76) !important;
+    font-size: 0.82rem !important;
+    font-weight: 650 !important;
+    line-height: 1.4 !important;
+}
+
+.arcanum-partner-results__status--error {
+    color: #7a2f27 !important;
+    background: rgba(255, 226, 217, 0.78) !important;
+    border-color: rgba(139, 61, 49, 0.42) !important;
+}
+
+.arcanum-partner-card__identity strong {
+    color: var(--arc-text) !important;
+    font-size: 0.82rem !important;
+}
+
+.arcanum-partner-card__identity span {
+    color: var(--arc-text-soft) !important;
+    font-size: 0.68rem !important;
+}
