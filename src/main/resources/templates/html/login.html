@@ -1275,7 +1275,25 @@
                 if (response.ok) {
                     statusBox.textContent = "Anmeldung erfolgreich – du wirst weitergeleitet.";
                     statusBox.classList.add("is-success");
-                    window.location.href = "/dashboard";
+                    try {
+                        const pendingResponse = await fetch(
+                            "/attendance-pending",
+                            {
+                                method: "POST",
+                                headers: {"Content-Type": "application/json"},
+                                body: "{}",
+                                credentials: "include"
+                            }
+                        );
+                        const pending = pendingResponse.ok
+                            ? await pendingResponse.json()
+                            : {pending: false};
+                        window.location.href = pending.pending
+                            ? "/attendance-checkin?resume=1"
+                            : "/dashboard";
+                    } catch (error) {
+                        window.location.href = "/dashboard";
+                    }
                     return;
                 }
 
