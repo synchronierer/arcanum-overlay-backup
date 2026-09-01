@@ -1059,6 +1059,8 @@
                         >
                     </div>
 
+                    <input id="next" name="next" type="hidden" value="">
+
                     <button id="submitButton" class="login-submit" type="submit">
                         <span class="login-submit__stamp" aria-hidden="true">
                             <img src="/arcanum-stamp.png" alt="">
@@ -1255,6 +1257,20 @@
         const form = document.getElementById("loginForm");
         const statusBox = document.getElementById("loginStatus");
         const submitButton = document.getElementById("submitButton");
+        const nextInput = document.getElementById("next");
+        const queryNext = new URLSearchParams(window.location.search).get("next");
+        if (queryNext) nextInput.value = queryNext;
+
+        function safeNext(value) {
+            return typeof value === "string"
+                && value.length <= 2048
+                && !/[\r\n\\]/.test(value)
+                && value.startsWith("/")
+                && !value.startsWith("//")
+                && !/^\/https?:/i.test(value)
+                ? value
+                : "/dashboard";
+        }
 
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -1275,25 +1291,7 @@
                 if (response.ok) {
                     statusBox.textContent = "Anmeldung erfolgreich – du wirst weitergeleitet.";
                     statusBox.classList.add("is-success");
-                    try {
-                        const pendingResponse = await fetch(
-                            "/attendance-pending",
-                            {
-                                method: "POST",
-                                headers: {"Content-Type": "application/json"},
-                                body: "{}",
-                                credentials: "include"
-                            }
-                        );
-                        const pending = pendingResponse.ok
-                            ? await pendingResponse.json()
-                            : {pending: false};
-                        window.location.href = pending.pending
-                            ? "/attendance-checkin?resume=1"
-                            : "/dashboard";
-                    } catch (error) {
-                        window.location.href = "/dashboard";
-                    }
+                    window.location.href = safeNext(nextInput.value);
                     return;
                 }
 
