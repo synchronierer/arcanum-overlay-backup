@@ -1059,7 +1059,7 @@
                         >
                     </div>
 
-                    <input id="next" name="next" type="hidden" value="">
+                    <input id="next" name="next" type="hidden" value="" disabled>
 
                     <button id="submitButton" class="login-submit" type="submit">
                         <span class="login-submit__stamp" aria-hidden="true">
@@ -1259,7 +1259,13 @@
         const submitButton = document.getElementById("submitButton");
         const nextInput = document.getElementById("next");
         const queryNext = new URLSearchParams(window.location.search).get("next");
-        if (queryNext) nextInput.value = queryNext;
+        if (queryNext) {
+            const validatedNext = safeNext(queryNext);
+            if (validatedNext !== null) {
+                nextInput.value = validatedNext;
+                nextInput.disabled = false;
+            }
+        }
 
         function safeNext(value) {
             return typeof value === "string"
@@ -1269,7 +1275,7 @@
                 && !value.startsWith("//")
                 && !/^\/https?:/i.test(value)
                 ? value
-                : "/dashboard";
+                : null;
         }
 
         form.addEventListener("submit", async (event) => {
@@ -1291,7 +1297,7 @@
                 if (response.ok) {
                     statusBox.textContent = "Anmeldung erfolgreich – du wirst weitergeleitet.";
                     statusBox.classList.add("is-success");
-                    window.location.href = safeNext(nextInput.value);
+                    window.location.href = safeNext(nextInput.value) || "/dashboard";
                     return;
                 }
 
