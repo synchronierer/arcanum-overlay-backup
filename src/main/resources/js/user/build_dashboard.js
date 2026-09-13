@@ -1911,9 +1911,9 @@ function calculateCurrentGrade(coins) {
 
     if (!reachedGrade) {
         return {
-            grade: null,
-            display: "Noch unter Note 5",
-            cssClass: "arcanum-current-grade--below"
+            grade: 6,
+            display: "Note 6 · ungenügend",
+            cssClass: "arcanum-current-grade--6"
         };
     }
 

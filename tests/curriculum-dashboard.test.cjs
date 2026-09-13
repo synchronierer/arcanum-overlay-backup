@@ -96,6 +96,13 @@ test('105 earned coins keep 100 target and expose extra coins',async()=>{
   assert.equal(model.currentGrade.grade,1);
  }finally{dom.window.close();}
 });
+test('grade boundaries follow canonical coin pedagogy',async()=>{
+ const {dom,w}=await setup();try {
+  for(const [coins,grade] of [[19,6],[20,5],[39,5],[40,4],[59,4],[60,3],[74,3],[75,2],[89,2],[90,1],[100,1],[105,1]]) {
+   assert.equal(w.calculateCurrentGrade(coins).grade,grade,`${coins} coins`);
+  }
+ }finally{dom.window.close();}
+});
 test('malformed successful responses cannot fabricate progress',async()=>{
  const {dom,w}=await setup();try {
   for(const mutate of [d=>d.progress.totalTokens=0,d=>d.semesterId=13,d=>d.flexibleTasks[0].completed=true,
