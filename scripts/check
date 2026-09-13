@@ -18,3 +18,9 @@ git diff --cached --check
 echo
 echo "===== Build und Tests ====="
 scripts/build-project
+
+if ! command -v node >/dev/null 2>&1; then
+    echo "Node.js 22+ ist für die Dashboard-Tests erforderlich." >&2
+    exit 1
+fi
+npm test

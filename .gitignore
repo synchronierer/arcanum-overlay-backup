@@ -36,3 +36,5 @@ bin
 .avatar-route-repair-*/
 .avatar-selector-backup-*/
 .logout-page-backup-*/
+
+node_modules/

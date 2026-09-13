@@ -9,15 +9,11 @@ scripts/check
 It checks whitespace errors, runs the complete Gradle build and tests, and
 prints the final Git status.
 
-## Current gaps
+## Dashboard tests
 
-The repository currently contains no automated test sources. Gradle's `test`
-task therefore validates test discovery and execution infrastructure but does
-not exercise plugin startup, route metadata, HTML, CSS, or JavaScript behavior.
-Future test work should add repository-local tests with synthetic data for the
-Java plugin shell and static resource contracts. Browser-level dashboard tests
-require a separately agreed test setup and must never use production data.
+Use Node.js 22+, run `npm ci`, then `scripts/check`. The check now runs the
+synthetic jsdom tests in `tests/curriculum-dashboard.test.cjs` after the Gradle
+build. See [curriculum dashboard](CURRICULUM_DASHBOARD.md) for coverage.
 
-A successful build does not authorize a commit, push, or deployment. Visual
-changes must additionally be checked in the intended tablet and desktop
-layouts with test data only.
+Plugin startup and live integration still require a separate acceptance test.
+No production data is used. Build success does not authorize deployment.

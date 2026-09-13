@@ -2955,3 +2955,20 @@ header.arcanum-hero .arcanum-grade-pill {
     color: var(--arc-text-soft) !important;
     font-size: 0.68rem !important;
 }
+/* Curriculum plans distinguish available rewards from earned progress. */
+.arcanum-curriculum-plan {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #b7a98a;
+    border-radius: 12px;
+    color: #2b332c;
+    background: #fffaf0;
+    overflow-wrap: anywhere;
+}
+.arcanum-curriculum-plan summary { cursor: pointer; font-weight: 700; padding: .5rem 0; }
+.arcanum-curriculum-plan h4 { margin: 1rem 0 .5rem; }
+.arcanum-curriculum-plan ul { list-style: none; margin: 0; padding: 0; }
+.arcanum-curriculum-plan li { display: flex; flex-direction: column; gap: .3rem; padding: .65rem 0; border-bottom: 1px solid #ddd1b8; }
+.arcanum-curriculum-plan li span { font-size: .9rem; }
+.arcanum-curriculum-plan .is-completed { color: #235034; }
+.arcanum-curriculum-plan .is-open { color: #514935; }

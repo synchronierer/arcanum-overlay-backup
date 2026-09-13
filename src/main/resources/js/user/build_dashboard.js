@@ -17,6 +17,7 @@ async function initialiseArcanumDashboard() {
             fetchMySubjects()
         ]);
 
+        if (!Array.isArray(subjects)) throw Error("Invalid subject response");
         renderStudentProfile(studentData);
 
         const subjectModels = await Promise.all(
@@ -25,6 +26,7 @@ async function initialiseArcanumDashboard() {
             )
         );
 
+        reconcileCurriculumSemesters(subjectModels);
         renderSubjects(subjectModels);
         renderSummary(subjectModels);
     } catch (error) {
@@ -33,6 +35,7 @@ async function initialiseArcanumDashboard() {
             "Deine Lerndaten konnten gerade nicht geladen werden. " +
             "Bitte lade die Seite erneut."
         );
+        setText("total-coins", "Nicht verfügbar");
     }
 }
 
@@ -50,11 +53,7 @@ function renderStudentProfile(studentData) {
     setText("student-initials", createInitials(firstName, lastName));
     initialiseAvatarSelector(studentData);
 
-    const completedTasks = safeArray(studentData?.completedTasks);
-    setText(
-        "total-coins",
-        String(calculateCoins(completedTasks))
-    );
+    setText("total-coins", "Wird geladen …");
 
     /*
      * Das aktuelle Backend stellt noch keinen Rang-Endpunkt bereit.
@@ -64,26 +63,32 @@ function renderStudentProfile(studentData) {
 }
 
 async function createSubjectModel(subject, studentData) {
-    const completedTasks = safeArray(studentData?.completedTasks);
+    let catalog;
+    try {
+        catalog = await fetchStudentCurriculumCatalog(subject.id);
+    } catch (error) {
+        return {id:subject.id, name:textValue(subject.name) || "Unbenanntes Fach",
+            curriculumError:error.message, curriculumErrorCode:error.code, coins:null};
+    }
+    const centralIds = new Set(catalog.centralTasks.map(task => task.id));
     const selectedTasks = safeArray(studentData?.selectedTasks);
     const lockedTasks = safeArray(studentData?.lockedTasks);
 
-    const completedForSubject = completedTasks.filter(
-        task => taskBelongsToSubject(task, subject)
-    );
+    const completedForSubject = [...catalog.centralTasks, ...catalog.flexibleTasks].filter(task => task.completed);
 
     const selectedForSubject = selectedTasks.filter(
-        task => taskBelongsToSubject(task, subject)
-    );
+        task => taskBelongsToSubject(task, subject) && centralIds.has(extractEntityId(task.id))
+    ).map(task => ({...task, ...catalog.centralTasks.find(entry => entry.id === extractEntityId(task.id))}));
 
     const lockedForSubject = lockedTasks.filter(
-        task => taskBelongsToSubject(task, subject)
-    );
+        task => taskBelongsToSubject(task, subject) && centralIds.has(extractEntityId(task.id))
+    ).map(task => ({...task, ...catalog.centralTasks.find(entry => entry.id === extractEntityId(task.id))}));
 
     let currentTopic = null;
 
     try {
         currentTopic = await fetchMyCurrentTopic(subject.id);
+        if (!catalog.centralTopics.some(topic => topic.id === extractEntityId(currentTopic?.id))) currentTopic = null;
     } catch (error) {
         /*
          * Eine leere Sandbox hat noch keine student_topics-Einträge.
@@ -95,7 +100,7 @@ async function createSubjectModel(subject, studentData) {
         );
     }
 
-    const coins = calculateCoins(completedForSubject);
+    const coins = catalog.progress.totalTokens;
     const currentGrade = calculateCurrentGrade(coins);
     const nextGrade = calculateNextGrade(coins);
 
@@ -103,6 +108,8 @@ async function createSubjectModel(subject, studentData) {
         id: subject.id,
         name: textValue(subject.name) || "Unbenanntes Fach",
         coins,
+        catalog,
+        semesterId:catalog.semesterId,
         currentTopic,
         selectedTasks: selectedForSubject,
         completedTasks: completedForSubject,
@@ -113,6 +120,117 @@ async function createSubjectModel(subject, studentData) {
             studentData?.currentRequests?.[subject.id]
         )
     };
+}
+
+function curriculumError(code, message) {
+    return Object.assign(new Error(message), {code});
+}
+
+async function fetchStudentCurriculumCatalog(subjectId) {
+    if (!Number.isSafeInteger(subjectId) || subjectId <= 0)
+        throw curriculumError('invalid_data', 'Die Fachdaten konnten nicht verarbeitet werden.');
+    let response;
+    try {
+        response = await fetch('/my-curriculum-catalog', {
+            method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({subjectId})
+        });
+    } catch {
+        throw curriculumError('network', 'Die Etappen konnten nicht geladen werden. Bitte erneut versuchen.');
+    }
+    if (response.status === 401) throw curriculumError('unauthorized', 'Bitte erneut anmelden.');
+    if (response.status === 403) throw curriculumError('forbidden', 'Für dieses Fach fehlt die Berechtigung.');
+    let body;
+    try { body = await response.json(); } catch { /* Never show raw response bodies. */ }
+    if (!response.ok) {
+        if (response.status === 409 && body?.error === 'context_unassigned')
+            throw curriculumError(body.error, 'Für dieses Fach ist noch kein SOL-Kontext zugeordnet.');
+        if (response.status === 409 && body?.error === 'current_semester_unavailable')
+            throw curriculumError(body.error, 'Das aktuelle Halbjahr ist noch nicht konfiguriert.');
+        throw curriculumError('request_failed', 'Die Etappen konnten nicht geladen werden. Bitte erneut versuchen.');
+    }
+    return normalizeCurriculumCatalog(body);
+}
+
+function normalizeCurriculumCatalog(body) {
+    const fail = () => { throw curriculumError('invalid_data', 'Die Etappendaten konnten nicht verarbeitet werden. Bitte neu laden.'); };
+    const integer = value => Number.isSafeInteger(value) && value >= 0;
+    if (!body || !integer(body.semesterId) || body.semesterId === 0 || !body.progress || !body.planned ||
+        body.progress.semesterId !== body.semesterId) fail();
+    for (const totals of [body.planned, body.progress]) {
+        if (!['centralTokens','flexibleTokens','totalTokens'].every(key => integer(totals[key])) ||
+            totals.centralTokens + totals.flexibleTokens !== totals.totalTokens || totals.totalTokens > 105) fail();
+    }
+    if (body.planned.regularLimit !== 100 || body.planned.hardLimit !== 105) fail();
+    const result = {...body};
+    for (const kind of ['central','flexible']) {
+        const topics = body[kind+'Topics'], tasks = body[kind+'Tasks'];
+        if (!Array.isArray(topics) || !Array.isArray(tasks)) fail();
+        const topicIds = new Set(), taskIds = new Set();
+        for (const topic of topics) {
+            if (!topic || !integer(topic.id) || topic.id === 0 || typeof topic.name !== 'string' || topicIds.has(topic.id)) fail();
+            topicIds.add(topic.id);
+        }
+        result[kind+'Tasks'] = tasks.map(task => {
+            if (!task || !integer(task.id) || task.id === 0 || taskIds.has(task.id) ||
+                typeof task.name !== 'string' || !integer(task.tokens) || typeof task.completed !== 'boolean') fail();
+            taskIds.add(task.id);
+            if (task.topicId != null && (!topicIds.has(task.topicId) || typeof task.topicName !== 'string')) fail();
+            if (kind === 'central' && (task.topicId == null || ![1,2,3].includes(task.niveau))) fail();
+            return {...task, kind, topic:task.topicId == null ? null : {id:task.topicId,name:task.topicName}};
+        });
+        // Validate the transport contract; the backend totals remain authoritative.
+        const unreleased = kind === 'central' ? (body.planned.unreleasedCentralTokens ?? 0) : 0;
+        if (!integer(unreleased)) fail();
+        if (tasks.reduce((sum, task) => sum + task.tokens, 0) + unreleased !== body.planned[kind+'Tokens'] ||
+            tasks.filter(task => task.completed).reduce((sum, task) => sum + task.tokens, 0) !== body.progress[kind+'Tokens']) fail();
+    }
+    return result;
+}
+
+function reconcileCurriculumSemesters(subjects) {
+    const missingSemester = subjects.some(subject => subject.curriculumErrorCode === 'current_semester_unavailable');
+    const semesters = new Set(subjects.filter(subject => !subject.curriculumError).map(subject => subject.semesterId));
+    if (!missingSemester && semesters.size <= 1) return;
+    const message = missingSemester ? 'Das aktuelle Halbjahr ist noch nicht konfiguriert.'
+        : 'Das Halbjahr wurde während des Ladens geändert. Bitte die Seite neu laden.';
+    subjects.forEach(subject => {subject.curriculumError = message; subject.coins = null;});
+}
+
+function createCurriculumPlan(catalog) {
+    const plan = document.createElement('details');
+    plan.className = 'arcanum-curriculum-plan';
+    const title = document.createElement('summary');title.textContent = 'Themen und Etappen';plan.append(title);
+    const totals = document.createElement('p');
+    totals.textContent = `${catalog.planned.totalTokens} geplante Münzen · ${catalog.progress.totalTokens} verdient · Ziel: 100 Münzen`;
+    plan.append(totals);
+    if (catalog.planned.unreleasedCentralTokens > 0) {
+        const pending = document.createElement('p');
+        pending.textContent = `${catalog.planned.unreleasedCentralTokens} geplante Münzen gehören zu noch nicht freigeschalteten Etappen.`;
+        plan.append(pending);
+    }
+    for (const kind of ['central','flexible']) {
+        const heading = document.createElement('h4');heading.textContent = kind === 'central' ? 'Zentrale Etappen · feste Münzen' : 'Flexible Etappen';plan.append(heading);
+        const topics = [...catalog[kind+'Topics']];
+        if (kind === 'flexible' && catalog.flexibleTasks.some(task => task.topicId == null))
+            topics.push({id:null,name:'Noch keinem Thema zugeordnet'});
+        if (!topics.length) {const empty=document.createElement('p');empty.textContent=kind === 'central' ? 'Noch keine zentralen Themen oder Etappen freigeschaltet.' : 'Noch keine Etappen geplant.';plan.append(empty);}
+        for (const topic of topics) {
+            const group=document.createElement('details'),summary=document.createElement('summary');summary.textContent=topic.name;group.append(summary);
+            const list=document.createElement('ul');
+            const tasks=catalog[kind+'Tasks'].filter(task => (task.topicId ?? null) === topic.id);
+            for (const task of tasks) {
+                const item=document.createElement('li');item.dataset.taskKey=`${kind}:${task.id}`;
+                const name=document.createElement('strong');name.textContent=task.name;
+                const state=document.createElement('span');
+                state.textContent=`${task.tokens} Münzen · ${task.completed?'Abgeschlossen · verdient':'Offen · erreichbar'}`;
+                item.className=task.completed?'is-completed':'is-open';item.append(name,state);list.append(item);
+            }
+            if (!tasks.length) {const empty=document.createElement('li');empty.textContent='Noch keine Etappen in diesem Thema.';list.append(empty);}
+            group.append(list);plan.append(group);
+        }
+    }
+    return plan;
 }
 
 function renderSubjects(subjectModels) {
@@ -148,6 +266,12 @@ function createSubjectCard(subject) {
     const card = document.createElement("article");
     card.className = "arcanum-subject-card";
     card.dataset.subjectId = String(subject.id);
+    if (subject.curriculumError) {
+        const title=document.createElement('h3');title.textContent=subject.name;
+        const message=document.createElement('p');message.setAttribute('role','status');message.textContent=subject.curriculumError;
+        card.append(title,message);return card;
+    }
+    card.dataset.semesterId = String(subject.semesterId);
 
     const progress = calculateGradeProgress(subject.coins, subject.nextGrade);
     const topicName = subject.currentTopic?.name
@@ -171,7 +295,7 @@ function createSubjectCard(subject) {
 
             <div class="arcanum-coin-badge">
                 <strong>${subject.coins}</strong>
-                <span>Münzen</span>
+                <span>Münzen verdient${subject.coins > 100 ? ` · +${subject.coins-100} Zusatzmünzen` : ''}</span>
             </div>
         </div>
 
@@ -490,6 +614,7 @@ function createSubjectCard(subject) {
         }
     );
 
+    card.append(createCurriculumPlan(subject.catalog));
     return card;
 }
 
@@ -1023,7 +1148,7 @@ function groupTasksByTopic(tasks) {
 
         const topicNumber = Number(topic?.number);
 
-        const key = String(topicId);
+        const key = `${task.kind || 'central'}:${topicId}`;
 
         if (!groups.has(key)) {
             groups.set(key, {
@@ -1109,10 +1234,10 @@ function createTaskGroupHtml(group, status) {
 
 function createTaskDetailRowHtml(task, status) {
     const coins = calculateTaskCoins(task);
-    const level = getNiveauInformation(task?.niveau);
+    const level = task?.kind === 'flexible' ? {label:'Flexible Etappe',cssClass:'offen'} : getNiveauInformation(task?.niveau);
     const taskId = extractEntityId(task?.id ?? task);
 
-    const coinText = coins > 0
+    const coinText = coins > 0 || task?.kind
         ? (
             status === "completed"
                 ? `${coins} Münzen`
@@ -1711,10 +1836,13 @@ function renderPartnerMatches(container, partners, subject) {
 
 
 function renderSummary(subjectModels) {
-    const totalCoins = subjectModels.reduce(
+    const successful = subjectModels.filter(subject => !subject.curriculumError);
+    const totalCoins = successful.reduce(
         (sum, subject) => sum + subject.coins,
         0
     );
+    const incomplete = successful.length !== subjectModels.length;
+    setText('total-coins', incomplete ? (successful.length ? `${totalCoins} · unvollständig` : 'Nicht verfügbar') : String(totalCoins));
 
     const activeSubjects = subjectModels.filter(
         subject => subject.currentTopic
@@ -1726,7 +1854,7 @@ function renderSummary(subjectModels) {
             ? "Für deine Klassenstufe sind noch keine Fächer eingerichtet."
             : `${subjectModels.length} Fächer · ` +
               `${activeSubjects} mit aktueller Etappe · ` +
-              `${totalCoins} erreichte Münzen`
+              (incomplete ? 'Münzsumme unvollständig' : `${totalCoins} erreichte Münzen`)
     );
 }
 
