@@ -661,124 +661,29 @@ function ensureTaskDetailsDialog() {
 
 
 async function fetchOpenTasksForSubject(subject) {
-    const student = await getArcanumCurrentStudent();
+    const catalog = subject?.catalog;
 
-    const studentId = extractEntityId(student?.id);
-    const subjectId = extractEntityId(subject?.id);
-
-    if (studentId === null || subjectId === null) {
+    if (
+        !catalog ||
+        !Array.isArray(catalog.centralTasks) ||
+        !Array.isArray(catalog.flexibleTasks)
+    ) {
         throw new Error(
-            "Schüler- oder Fachdaten fehlen."
+            "Die verwalteten Etappendaten fehlen."
         );
     }
 
-    const topicResponse = await fetch("/current-topic", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            subjectId
-        })
-    });
-
-    if (!topicResponse.ok) {
-        throw new Error(
-            `Das aktuelle Thema konnte nicht geladen werden ` +
-            `(${topicResponse.status}).`
-        );
-    }
-
-    const topic = await topicResponse.json();
-
-    if (!topic) {
-        return {
-            topic: null,
-            tasks: []
-        };
-    }
-
-    const taskIds = [
-        ...new Set(
-            safeArray(topic.tasks)
-                .map(task => extractEntityId(task))
-                .filter(taskId => taskId !== null)
-        )
-    ];
-
-    if (taskIds.length === 0) {
-        return {
-            topic,
-            tasks: []
-        };
-    }
-
-    const tasksResponse = await fetch("/tasks", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            ids: taskIds,
-            studentId
-        })
-    });
-
-    if (!tasksResponse.ok) {
-        throw new Error(
-            `Die Etappen konnten nicht geladen werden ` +
-            `(${tasksResponse.status}).`
-        );
-    }
-
-    const payload = await tasksResponse.json();
-
-    const allTasks = Array.isArray(payload)
-        ? payload
-        : safeArray(
-            payload?.tasks ??
-            payload?.results
-        );
-
-    const unavailableIds = new Set();
-
-    [
-        ...safeArray(subject.selectedTasks),
-        ...safeArray(subject.completedTasks),
-        ...safeArray(subject.lockedTasks)
-    ].forEach(task => {
-        const taskId = extractEntityId(task?.id ?? task);
-
-        if (taskId !== null) {
-            unavailableIds.add(taskId);
-        }
-    });
-
-    const tasks = allTasks
-        .filter(task => {
-            const taskId = extractEntityId(
-                task?.id ?? task
-            );
-
-            return (
-                taskId !== null &&
-                !unavailableIds.has(taskId)
-            );
-        })
-        .map(task => ({
-            ...task,
-            topic: (
-                task?.topic &&
-                typeof task.topic === "object"
-            )
-                ? task.topic
-                : topic
-        }));
+    const tasks = [
+        ...catalog.centralTasks,
+        ...catalog.flexibleTasks
+    ].filter(task => (
+        task?.active === true &&
+        task?.completed !== true &&
+        task?.inProgress !== true
+    ));
 
     return {
-        topic,
+        topic: null,
         tasks
     };
 }
@@ -805,7 +710,7 @@ async function openAvailableTaskDetails(subject) {
     title.textContent = `${subject.name} · Offen`;
 
     subtitle.textContent =
-        "Noch nicht begonnene Etappen des aktuellen Themas.";
+        "Freigeschaltete Etappen, die du beginnen kannst.";
 
     summary.textContent =
         "Offene Etappen werden geladen …";
@@ -829,26 +734,15 @@ async function openAvailableTaskDetails(subject) {
             subject
         );
 
-        const topicName = textValue(
-            result.topic?.name
-        ).trim();
-
         if (result.tasks.length === 0) {
-            summary.textContent = topicName
-                ? `Keine offene Etappe im Thema „${topicName}“.`
-                : "Für dieses Fach ist kein aktuelles Thema festgelegt.";
+            summary.textContent =
+                "Keine offenen Etappen verfügbar.";
 
             content.innerHTML = `
                 <div class="arcanum-task-dialog__empty">
                     <p>
-                        ${
-                            topicName
-                                ? "Alle Etappen dieses Themas wurden " +
-                                  "bereits begonnen, bestanden oder " +
-                                  "gesperrt."
-                                : "Die Lehrkraft hat noch kein " +
-                                  "aktuelles Thema festgelegt."
-                        }
+                        Für dieses Fach sind aktuell keine freigeschalteten
+                        offenen Etappen vorhanden.
                     </p>
                 </div>
             `;
@@ -893,20 +787,30 @@ async function openAvailableTaskDetails(subject) {
 async function changeStudentTaskStatus(
     action,
     taskId,
-    button
+    button,
+    kind = "central"
 ) {
-    const student = await getArcanumCurrentStudent();
-    const studentId = extractEntityId(student?.id);
+    const isFlexible = kind === "flexible";
+    let studentId = null;
 
-    if (studentId === null) {
-        throw new Error(
-            "Die Schüler-ID fehlt."
-        );
+    if (!isFlexible) {
+        const student = await getArcanumCurrentStudent();
+        studentId = extractEntityId(student?.id);
+
+        if (studentId === null) {
+            throw new Error(
+                "Die Schüler-ID fehlt."
+            );
+        }
     }
 
     const endpoint = action === "begin"
-        ? "/begin-task"
-        : "/cancel-task";
+        ? (isFlexible ? "/begin-flexible-task" : "/begin-task")
+        : (isFlexible ? "/cancel-flexible-task" : "/cancel-task");
+
+    const body = isFlexible
+        ? { taskId }
+        : { studentId, taskId };
 
     const response = await fetch(endpoint, {
         method: "POST",
@@ -914,10 +818,7 @@ async function changeStudentTaskStatus(
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            studentId,
-            taskId
-        })
+        body: JSON.stringify(body)
     });
 
     if (!response.ok) {
@@ -949,6 +850,9 @@ async function handleTaskActionClick(event) {
 
     const action = button.dataset.taskAction;
     const taskId = Number(button.dataset.taskId);
+    const kind = button.dataset.taskKind === "flexible"
+        ? "flexible"
+        : "central";
 
     if (
         !["begin", "cancel"].includes(action) ||
@@ -978,7 +882,8 @@ async function handleTaskActionClick(event) {
         await changeStudentTaskStatus(
             action,
             taskId,
-            button
+            button,
+            kind
         );
     } catch (error) {
         console.error(
@@ -1130,6 +1035,7 @@ function createTaskDetailRowHtml(task, status) {
                        arcanum-task-action-button--begin"
                 data-task-action="begin"
                 data-task-id="${taskId}"
+                data-task-kind="${task?.kind === "flexible" ? "flexible" : "central"}"
             >
                 Etappe beginnen
             </button>
@@ -1144,6 +1050,7 @@ function createTaskDetailRowHtml(task, status) {
                        arcanum-task-action-button--cancel"
                 data-task-action="cancel"
                 data-task-id="${taskId}"
+                data-task-kind="${task?.kind === "flexible" ? "flexible" : "central"}"
             >
                 Etappe abbrechen
             </button>
