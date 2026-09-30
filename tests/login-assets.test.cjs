@@ -18,7 +18,9 @@ test('login artwork uses content-hashed public WebP routes', () => {
         assert.deepEqual(routes[url]?.context, 'imgs');
         const namespace = url.includes('inspiration-') ? 'inspiration' : 'login';
         assert.deepEqual(routes[url]?.namespaces, [namespace]);
+        assert.ok(fs.existsSync(path.join(resources, 'imgs', namespace, path.basename(url))));
     }
+    assert.doesNotMatch(login, /\.png(?:["')\s]|$)/i);
 });
 
 test('login chooses its inspiration before assigning a single image source', () => {
@@ -28,4 +30,14 @@ test('login chooses its inspiration before assigning a single image source', () 
     assert.match(login, /quoteCardImage\.src\s*=\s*selectedInspiration\.image/);
     assert.equal((login.match(/id="quoteCardImage"/g) || []).length, 1);
     assert.doesNotMatch(login, /src="\/arcanum-inspiration-[^"]+\.png"/);
+
+    const selectedAssets = [...login.matchAll(/"image"\s*:\s*"(\/arcanum-inspiration-[^"]+\.webp)"/g)]
+        .map(match => match[1]);
+    assert.ok(selectedAssets.length > 0);
+    assert.equal(new Set(selectedAssets).size, selectedAssets.length);
+    for (const url of selectedAssets) {
+        assert.match(url, /-[a-f0-9]{16}\.webp$/);
+        assert.deepEqual(routes[url]?.access_level, 'public');
+        assert.ok(fs.existsSync(path.join(resources, 'imgs', 'inspiration', path.basename(url))));
+    }
 });
