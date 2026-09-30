@@ -20,13 +20,6 @@ jobs:
       - name: Checkout exact source commit
         uses: actions/checkout@v7
 
-      - name: Check out canonical Core API dependency
-        uses: actions/checkout@v7
-        with:
-          repository: Learn-Monitor/student-database
-          ref: arcanum-2026
-          path: .ci/student-database
-
       - name: Set up project JDK 17
         uses: actions/setup-java@v5
         with:
@@ -44,18 +37,20 @@ jobs:
       - name: Install JS test dependencies
         run: npm ci
 
+      - name: Check out canonical Core API dependency outside the Overlay workspace
+        run: git clone --depth=1 --branch arcanum-2026 https://github.com/Learn-Monitor/student-database.git "$RUNNER_TEMP/student-database"
+
       - name: Build Core API JAR with the Core Gradle wrapper
-        working-directory: .ci/student-database
-        run: ./gradlew --no-daemon --no-parallel --max-workers=1 --console=plain jar
+        run: cd "$RUNNER_TEMP/student-database" && ./gradlew --no-daemon --no-parallel --max-workers=1 --console=plain jar
 
       - name: Locate Core API JAR
         id: core-api
         run: |
           set -euo pipefail
-          mapfile -t jars < <(find .ci/student-database/build/libs -maxdepth 1 -type f -name 'student-database-*.jar' ! -name '*-fat.jar' -print)
+          mapfile -t jars < <(find "$RUNNER_TEMP/student-database/build/libs" -maxdepth 1 -type f -name 'student-database-*.jar' ! -name '*-fat.jar' -print)
           test "${#jars[@]}" -eq 1
-          echo "jar=${GITHUB_WORKSPACE}/${jars[0]}" >> "$GITHUB_OUTPUT"
-          echo "commit=$(git -C .ci/student-database rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "jar=${jars[0]}" >> "$GITHUB_OUTPUT"
+          echo "commit=$(git -C "$RUNNER_TEMP/student-database" rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Run repository checks, full tests, and plugin build
         env:
