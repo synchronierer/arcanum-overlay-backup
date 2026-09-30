@@ -51,11 +51,32 @@ jobs:
           test "${#jars[@]}" -eq 1
           echo "jar=${jars[0]}" >> "$GITHUB_OUTPUT"
           echo "commit=$(git -C "$RUNNER_TEMP/student-database" rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          sha256sum "${jars[0]}" | awk '{print "sha256="$1}' >> "$GITHUB_OUTPUT"
 
       - name: Run repository checks, full tests, and plugin build
         env:
           STUDENT_DATABASE_JAR: ${{ steps.core-api.outputs.jar }}
-        run: scripts/check
+        run: set -o pipefail; scripts/check 2>&1 | tee "$RUNNER_TEMP/overlay-check.log"
+
+      - name: Count Gradle and JavaScript tests
+        id: test-counts
+        run: |
+          python3 - <<'PY'
+          import glob, os, pathlib, re, xml.etree.ElementTree as ET
+          totals = {"tests": 0, "failures": 0, "errors": 0, "skipped": 0}
+          for report in glob.glob("build/test-results/**/*.xml", recursive=True):
+              root = ET.parse(report).getroot()
+              for key in totals:
+                  totals[key] += int(root.attrib.get(key, 0))
+          log = pathlib.Path(os.environ["RUNNER_TEMP"], "overlay-check.log").read_text()
+          matches = re.findall(r"^# tests (\d+)\s*$", log, re.MULTILINE)
+          if not matches:
+              raise SystemExit("Node test summary not found in scripts/check output")
+          print(f"Gradle test totals: {totals}")
+          print(f"Node test count: {matches[-1]}")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write(f"gradle-tests={totals['tests']}\n")
+              output.write(f"node-tests={matches[-1]}\n")
 
       - name: Verify exactly one plugin JAR and write provenance
         env:
@@ -64,6 +85,9 @@ jobs:
           SOURCE_SHA: ${{ github.sha }}
           WORKFLOW_RUN_ID: ${{ github.run_id }}
           CORE_API_COMMIT: ${{ steps.core-api.outputs.commit }}
+          CORE_API_SHA256: ${{ steps.core-api.outputs.sha256 }}
+          GRADLE_TEST_COUNT: ${{ steps.test-counts.outputs.gradle-tests }}
+          NODE_TEST_COUNT: ${{ steps.test-counts.outputs.node-tests }}
         run: |
           set -euo pipefail
           mapfile -t jars < <(find build/libs -maxdepth 1 -type f -name '*.jar' -print)
@@ -83,7 +107,12 @@ jobs:
               "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
               "workflow_run_id": os.environ["WORKFLOW_RUN_ID"],
               "core_api_dependency_commit": os.environ["CORE_API_COMMIT"],
-              "tests": {"overlay_node_suite": "passed", "gradle_build": "passed"},
+              "core_api_dependency_sha256": os.environ["CORE_API_SHA256"],
+              "tests": {
+                  "overlay_node_suite": {"count": int(os.environ["NODE_TEST_COUNT"]), "status": "passed"},
+                  "gradle_suite": {"count": int(os.environ["GRADLE_TEST_COUNT"]), "status": "passed"},
+                  "gradle_build": "passed"
+              },
               "status": "passed"
           }
           pathlib.Path("dist/provenance.json").write_text(json.dumps(data, indent=2) + "\n")
