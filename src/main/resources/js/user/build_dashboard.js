@@ -84,21 +84,7 @@ async function createSubjectModel(subject, studentData) {
         task => taskBelongsToSubject(task, subject) && centralIds.has(extractEntityId(task.id))
     ).map(task => ({...task, ...catalog.centralTasks.find(entry => entry.id === extractEntityId(task.id))}));
 
-    let currentTopic = null;
-
-    try {
-        currentTopic = await fetchMyCurrentTopic(subject.id);
-        if (!catalog.centralTopics.some(topic => topic.id === extractEntityId(currentTopic?.id))) currentTopic = null;
-    } catch (error) {
-        /*
-         * Eine leere Sandbox hat noch keine student_topics-Einträge.
-         * Das ist ein gültiger Leerzustand und kein Dashboard-Abbruch.
-         */
-        console.debug(
-            `Für ${subject.name} ist noch kein Thema zugewiesen.`,
-            error
-        );
-    }
+    const currentTopic = currentTopicFromCatalog(catalog);
 
     const coins = catalog.progress.totalTokens;
     const currentGrade = calculateCurrentGrade(coins);
@@ -120,6 +106,26 @@ async function createSubjectModel(subject, studentData) {
             studentData?.currentRequests?.[subject.id]
         )
     };
+}
+
+function currentTopicFromCatalog(catalog) {
+    const activeStage = catalog?.activeStage;
+    if (!activeStage) return null;
+
+    const activeTaskId = extractEntityId(activeStage.taskId);
+    const activeTask = [
+        ...safeArray(catalog.centralTasks),
+        ...safeArray(catalog.flexibleTasks)
+    ].find(task => extractEntityId(task?.id) === activeTaskId);
+    const topic = activeTask?.topic ?? (
+        activeTask?.topicId == null
+            ? null
+            : {id: activeTask.topicId, name: activeTask.topicName}
+    );
+
+    return topic?.id != null && typeof topic.name === 'string'
+        ? {id: topic.id, name: topic.name}
+        : null;
 }
 
 function curriculumError(code, message) {

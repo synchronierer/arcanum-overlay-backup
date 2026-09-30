@@ -47,6 +47,15 @@ test('model uses earned curriculum values and preserves separate task and topic 
   assert.equal(card.querySelector('.arcanum-curriculum-plan [data-task-action]'),null);
  }finally{dom.window.close();}
 });
+test('model derives the current topic from the catalog without a current-topic request',async()=>{
+ const data=fixture();data.activeStage={type:'CENTRAL',taskId:17,subjectId:3,semesterId:12,name:'Same name',niveau:1};
+ const {dom,w,calls}=await setup({ok:true,status:200,body:data});try {
+  w.fetchMyCurrentTopic=()=>{throw new Error('current-topic must not be used by the dashboard model');};
+  const model=await w.createSubjectModel({id:3,name:'Math'},{});
+  assert.equal(model.currentTopic.id,17);assert.equal(model.currentTopic.name,'Central topic');
+  assert.deepEqual(calls.map(call=>call.url),['/my-curriculum-catalog']);
+ }finally{dom.window.close();}
+});
 test('plan and current names are rendered as text, including empty topics',async()=>{
  const {dom,w}=await setup();try {
   const data=fixture();data.centralTasks[0].name='<img src=x onerror=alert(1)>';data.flexibleTopics.push({id:19,name:'Empty topic'});
