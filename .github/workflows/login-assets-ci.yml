@@ -9,7 +9,6 @@ on:
 
 permissions:
   contents: read
-  packages: read
 
 jobs:
   test-and-package:
@@ -17,10 +16,16 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: read
-      packages: read
     steps:
       - name: Checkout exact source commit
         uses: actions/checkout@v7
+
+      - name: Check out canonical Core API dependency
+        uses: actions/checkout@v7
+        with:
+          repository: Learn-Monitor/student-database
+          ref: arcanum-2026
+          path: .ci/student-database
 
       - name: Set up project JDK 17
         uses: actions/setup-java@v5
@@ -39,10 +44,22 @@ jobs:
       - name: Install JS test dependencies
         run: npm ci
 
+      - name: Build Core API JAR with the Core Gradle wrapper
+        working-directory: .ci/student-database
+        run: ./gradlew --no-daemon --no-parallel --max-workers=1 --console=plain jar
+
+      - name: Locate Core API JAR
+        id: core-api
+        run: |
+          set -euo pipefail
+          mapfile -t jars < <(find .ci/student-database/build/libs -maxdepth 1 -type f -name 'student-database-*.jar' ! -name '*-fat.jar' -print)
+          test "${#jars[@]}" -eq 1
+          echo "jar=${GITHUB_WORKSPACE}/${jars[0]}" >> "$GITHUB_OUTPUT"
+          echo "commit=$(git -C .ci/student-database rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
       - name: Run repository checks, full tests, and plugin build
         env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ github.token }}
+          STUDENT_DATABASE_JAR: ${{ steps.core-api.outputs.jar }}
         run: scripts/check
 
       - name: Verify exactly one plugin JAR and write provenance
@@ -51,6 +68,7 @@ jobs:
           SOURCE_REF: ${{ github.ref_name }}
           SOURCE_SHA: ${{ github.sha }}
           WORKFLOW_RUN_ID: ${{ github.run_id }}
+          CORE_API_COMMIT: ${{ steps.core-api.outputs.commit }}
         run: |
           set -euo pipefail
           mapfile -t jars < <(find build/libs -maxdepth 1 -type f -name '*.jar' -print)
@@ -69,6 +87,7 @@ jobs:
               "artifact": artifact.name,
               "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
               "workflow_run_id": os.environ["WORKFLOW_RUN_ID"],
+              "core_api_dependency_commit": os.environ["CORE_API_COMMIT"],
               "tests": {"overlay_node_suite": "passed", "gradle_build": "passed"},
               "status": "passed"
           }
