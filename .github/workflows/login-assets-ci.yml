@@ -41,13 +41,13 @@ jobs:
         run: git clone --depth=1 --branch arcanum-2026 https://github.com/Learn-Monitor/student-database.git "$RUNNER_TEMP/student-database"
 
       - name: Build Core API JAR with the Core Gradle wrapper
-        run: cd "$RUNNER_TEMP/student-database" && ./gradlew --no-daemon --no-parallel --max-workers=1 --console=plain jar
+        run: cd "$RUNNER_TEMP/student-database" && ./gradlew --no-daemon --no-parallel --max-workers=1 --console=plain shadowJar
 
       - name: Locate Core API JAR
         id: core-api
         run: |
           set -euo pipefail
-          mapfile -t jars < <(find "$RUNNER_TEMP/student-database/build/libs" -maxdepth 1 -type f -name 'student-database-*.jar' ! -name '*-fat.jar' -print)
+          mapfile -t jars < <(find "$RUNNER_TEMP/student-database/build/libs" -maxdepth 1 -type f -name 'student-database-*-fat.jar' -print)
           test "${#jars[@]}" -eq 1
           echo "jar=${jars[0]}" >> "$GITHUB_OUTPUT"
           echo "commit=$(git -C "$RUNNER_TEMP/student-database" rev-parse HEAD)" >> "$GITHUB_OUTPUT"
