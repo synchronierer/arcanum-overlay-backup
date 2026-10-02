@@ -1,3 +1,5 @@
+import org.gradle.language.jvm.tasks.ProcessResources
+
 plugins {
     java
 }
@@ -42,6 +44,50 @@ tasks.withType<Jar> {
     manifest {
         attributes["Implementation-Title"] = "Arcanum Overlay Plugin"
         attributes["Implementation-Version"] = project.version
+    }
+}
+
+val generatedWebPaths = layout.buildDirectory.file("generated-resources/main/meta/paths/get_paths.json")
+
+val generateWebPaths = tasks.register("generateWebPaths") {
+    val basePaths = file("src/main/resources/meta/paths/get_paths.json")
+    val imageRoots = listOf(
+        file("src/main/resources/imgs/login") to "login",
+        file("src/main/resources/imgs/inspiration") to "inspiration",
+    )
+    inputs.file(basePaths)
+    imageRoots.forEach { (root, _) -> inputs.files(fileTree(root) { include("*.webp") }) }
+    outputs.file(generatedWebPaths)
+
+    doLast {
+        val base = basePaths.readText().trim()
+        val additions = imageRoots.flatMap { (root, namespace) ->
+            root.listFiles()?.filter { it.isFile && it.extension == "webp" }?.sortedBy { it.name }?.map { image ->
+                val route = "/${image.name}"
+                if (base.contains("\"$route\"")) "" else """    "$route": {
+        "type": "GET",
+        "handler_type": "FileRequestHandler",
+        "namespaces": ["$namespace"],
+        "context": "imgs",
+        "access_level": "public"
+    }"""
+            } ?: emptyList()
+        }.filter(String::isNotEmpty)
+        val result = if (additions.isEmpty()) base + "\n" else
+            base.removeSuffix("}").trimEnd() + ",\n" + additions.joinToString(",\n") + "\n}\n"
+        generatedWebPaths.get().asFile.apply {
+            parentFile.mkdirs()
+            writeText(result)
+        }
+    }
+}
+
+tasks.named<ProcessResources>("processResources") {
+    dependsOn(generateWebPaths)
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from(generatedWebPaths) {
+        into("meta/paths")
+        rename { "get_paths.json" }
     }
 }
 
